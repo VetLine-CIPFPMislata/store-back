@@ -19,7 +19,6 @@ public class Client {
                   String password,
                   String phone,
                   String address,
-                  String profilePicture,
                   LocalDate birthdate,
                   String country,
                   Long cartId) {
