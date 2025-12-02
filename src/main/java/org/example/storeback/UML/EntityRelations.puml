@@ -1,0 +1,96 @@
+@startuml
+
+' =======================
+'       ENTIDADES
+' =======================
+
+
+class Vet {
+    id
+    name
+    password
+    phone
+    address
+}
+
+class Client {
+    id
+    name
+    email
+    password
+    phone
+    address
+    profilePicture
+    birthdate
+    country
+}
+
+class Pet {
+    id
+    id_client
+    name
+    species
+    age
+    gender
+}
+
+class Appointment {
+    id
+    id_pet
+    id_vet
+    appointment_date
+    appointment_time
+    appointment_type
+    description
+    status
+}
+
+class Cart {
+    id_cart
+    total_products
+    total_price
+}
+
+class CartItem {
+    id_item_cart
+    quantity
+}
+
+class Product {
+    id_product
+    id_category
+    name
+    product_description
+    price
+    discountedPrice
+    pictureProduct
+    quantity
+}
+
+class ProductCategory {
+    id_category
+    name
+    description
+}
+
+' =======================
+'      RELACIONES
+' =======================
+
+
+Vet "1" --> "N" Client : serves
+
+Client "1" --> "N" Pet
+Client "1" --> "1" Cart : has
+
+Pet "1" --> "N" Appointment
+Vet "1" --> "N" Appointment
+
+
+Cart "1" --> "N" CartItem : contains
+Product "1" --> "N" CartItem
+
+ProductCategory "1" --> "N" Product
+
+@enduml
+

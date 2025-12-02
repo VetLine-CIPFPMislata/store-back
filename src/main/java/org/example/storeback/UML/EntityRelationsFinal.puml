@@ -1,0 +1,62 @@
+@startuml
+
+' =======================
+'       ENTIDADES
+' =======================
+
+
+
+class Client {
+    id
+    name
+    email
+    password
+    phone
+    address
+    profilePicture
+    birthdate
+    country
+}
+
+class Cart {
+    id_cart
+    total_products
+    total_price
+}
+
+class CartItem {
+    id_item_cart
+    quantity
+}
+
+class Product {
+    id_product
+    id_category
+    name
+    product_description
+    price
+    discountedPrice
+    pictureProduct
+    quantity
+    rating
+}
+
+class ProductCategory {
+    id_category
+    name
+    description
+}
+
+' =======================
+'      RELACIONES
+' =======================
+
+Client "1" --> "1" Cart : has
+
+
+Cart "1" --> "N" CartItem : contains
+Product "1" --> "N" CartItem
+
+ProductCategory "1" --> "N" Product
+
+@enduml
