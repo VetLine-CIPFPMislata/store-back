@@ -14,7 +14,6 @@ class Client {
     phone
     address
     profilePicture
-    birthdate
     country
 }
 

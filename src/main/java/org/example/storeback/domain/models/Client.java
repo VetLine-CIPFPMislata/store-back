@@ -9,7 +9,6 @@ public class Client {
     private final String password;
     private final String phone;
     private final String address;
-    private final LocalDate birthdate;
     private final String country;
     private final Long cartId;
 
@@ -19,7 +18,6 @@ public class Client {
                   String password,
                   String phone,
                   String address,
-                  LocalDate birthdate,
                   String country,
                   Long cartId) {
         this.id = id;
@@ -28,7 +26,6 @@ public class Client {
         this.password = password;
         this.phone = phone;
         this.address = address;
-        this.birthdate = birthdate;
         this.country = country;
         this.cartId = cartId;
     }
@@ -39,7 +36,6 @@ public class Client {
     public String getPassword() { return password; }
     public String getPhone() { return phone; }
     public String getAddress() { return address; }
-    public LocalDate getBirthdate() { return birthdate; }
     public String getCountry() { return country; }
     public Long getCartId() { return cartId; }
 }
