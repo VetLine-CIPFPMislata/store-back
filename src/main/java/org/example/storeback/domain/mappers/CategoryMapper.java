@@ -2,6 +2,7 @@ package org.example.storeback.domain.mappers;
 
 import org.example.storeback.domain.models.Category;
 import org.example.storeback.domain.repository.entity.CategoryEntity;
+import org.example.storeback.domain.service.dto.CategoryDto;
 
 public class CategoryMapper {
     private static CategoryMapper instance;
@@ -38,7 +39,7 @@ public class CategoryMapper {
         );
     }
 
-    public Category fromCategoryDtoToCategory(CategoryEntity categoryDto) {
+    public Category fromCategoryDtoToCategory(CategoryDto categoryDto) {
         if (categoryDto == null) {
             throw new IllegalArgumentException("CategoryDto cannot be null");
         }
@@ -49,11 +50,11 @@ public class CategoryMapper {
         );
     }
 
-    public CategoryEntity fromCategoryToCategoryDto(Category category) {
+    public CategoryDto fromCategoryToCategoryDto(Category category) {
         if (category == null) {
             throw new IllegalArgumentException("Category cannot be null");
         }
-        return new CategoryEntity(
+        return new CategoryDto(
                 category.getId(),
                 category.getName(),
                 category.getDescription()
