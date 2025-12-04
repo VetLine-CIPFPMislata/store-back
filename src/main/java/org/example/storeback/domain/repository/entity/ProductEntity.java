@@ -9,7 +9,6 @@ public record ProductEntity(
         Category category,
         String name,
         String productDescription,
-        BigDecimal price,
         BigDecimal basePrice,
         BigDecimal discountPercentage,
         String pictureProduct,

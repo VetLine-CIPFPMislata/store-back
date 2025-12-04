@@ -8,26 +8,23 @@ public class Client {
     private final String email;
     private final String password;
     private final String phone;
-    private final String address;
-    private final String country;
     private final Long cartId;
+    private final String role;
 
     public Client(Long id,
                   String name,
                   String email,
                   String password,
                   String phone,
-                  String address,
-                  String country,
-                  Long cartId) {
+                  Long cartId,
+                  String role) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
         this.phone = phone;
-        this.address = address;
-        this.country = country;
         this.cartId = cartId;
+        this.role = role;
     }
 
     public Long getId() { return id; }
@@ -35,7 +32,6 @@ public class Client {
     public String getEmail() { return email; }
     public String getPassword() { return password; }
     public String getPhone() { return phone; }
-    public String getAddress() { return address; }
-    public String getCountry() { return country; }
     public Long getCartId() { return cartId; }
+    public String getRole() { return role; }
 }

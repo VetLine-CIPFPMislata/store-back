@@ -21,7 +21,6 @@ public class Product {
                    String name,
                    String productDescription,
                    BigDecimal basePrice,
-                   BigDecimal price,
                    BigDecimal discountPercentage,
                    String pictureProduct,
                    int quantity,

@@ -8,9 +8,7 @@ public record ClientDto(
         String email,
         String password,
         String phone,
-        String address,
-        LocalDate birthdate,
-        String country,
-        Long cartId
+        Long cartId,
+        String role
 ) {
 }

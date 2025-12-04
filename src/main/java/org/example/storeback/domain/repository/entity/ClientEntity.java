@@ -6,9 +6,7 @@ public record ClientEntity(
         String email,
         String password,
         String phone,
-        String address,
-        String profilePicture,
-        String country,
-        Long cartId){
+        Long cartId,
+        String role){
 
 }
