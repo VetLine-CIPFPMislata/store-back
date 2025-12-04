@@ -12,8 +12,6 @@ class Client {
     email
     password
     phone
-    address
-    profilePicture
     country
 }
 
