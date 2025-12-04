@@ -1,6 +1,7 @@
 package org.example.storeback.persistence.repository.mapper;
 
 import org.example.storeback.domain.repository.entity.ProductEntity;
+import org.example.storeback.persistence.dao.jpa.entity.ProductJpaEntity;
 
 public class ProductMapperPersistence {
 
@@ -33,12 +34,12 @@ public class ProductMapperPersistence {
         );
     }
 
-    public ProductEntity fromProductEntityToProductEntity(ProductEntity productEntity){
+    public ProductJpaEntity fromProductEntityToProductJpaEntity(ProductJpaEntity productEntity){
         if (productEntity == null){
             return  null;
         }
 
-        return new ProductEntity(
+        return new ProductJpaEntity(
                 productEntity.getId(),
                 productEntity.getCategory(),
                 productEntity.getName(),

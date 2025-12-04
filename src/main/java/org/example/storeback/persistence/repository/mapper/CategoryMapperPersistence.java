@@ -1,6 +1,7 @@
 package org.example.storeback.persistence.repository.mapper;
 
 import org.example.storeback.domain.repository.entity.CategoryEntity;
+import org.example.storeback.persistence.dao.jpa.entity.CategoryJpaEntity;
 
 public class CategoryMapperPersistence {
 
@@ -14,23 +15,23 @@ public class CategoryMapperPersistence {
     public  CategoryMapperPersistence() {
     }
 
-    public CategoryEntity fromCategoryJpaEntityToCategoryEntity(CategoryEntity categoryEntity) {
+    public CategoryJpaEntity fromCategoryJpaEntityToCategoryEntity(CategoryEntity categoryEntity) {
         if (categoryEntity == null) {
             return null;
         }
-        return new CategoryEntity(
+        return new CategoryJpaEntity(
                 categoryEntity.id(),
                 categoryEntity.name(),
                 categoryEntity.description()
         );
     }
 
-    public  CategoryEntity fromCategoryEntityToCategoryEntity(CategoryEntity categoryEntity) {
+    public  CategoryJpaEntity fromCategoryEntityToCategoryJpaEntity(CategoryJpaEntity categoryEntity) {
         if (categoryEntity == null) {
             return null;
         }
 
-        return new CategoryEntity(
+        return new CategoryJpaEntity(
                 categoryEntity.getId(),
                 categoryEntity.getName(),
                 categoryEntity.getDescription()
