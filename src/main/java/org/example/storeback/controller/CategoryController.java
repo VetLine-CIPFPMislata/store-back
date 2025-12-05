@@ -37,8 +37,8 @@ public class CategoryController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
     // GET by Name
-    @GetMapping("/{name}")
-    public ResponseEntity<CategoryResponse> findCategoryByName(@RequestParam String name) {
+    @GetMapping("/search/{name}")
+    public ResponseEntity<CategoryResponse> findCategoryByName(@PathVariable String name) {
         Optional<CategoryDto> categoryDtoOptional = categoryService.findByName(name);
         return categoryDtoOptional
                 .map(categoryDto -> ResponseEntity.ok(new CategoryResponse(categoryDto.id(), categoryDto.name())))
