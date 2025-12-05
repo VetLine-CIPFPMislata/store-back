@@ -2,13 +2,13 @@ package org.example.storeback.domain.service.impl;
 
 import org.example.storeback.domain.mappers.ProductMapper;
 import org.example.storeback.domain.models.Page;
-import org.example.storeback.domain.models.Product;
 import org.example.storeback.domain.repository.ProductRepository;
 import org.example.storeback.domain.repository.entity.ProductEntity;
 import org.example.storeback.domain.service.ProductService;
 import org.example.storeback.domain.service.dto.ProductDto;
 
 import java.util.List;
+import java.util.Optional;
 
 public class ProductServiceImpl implements ProductService {
 
@@ -19,7 +19,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<ProductDto> findAllProducts(int page, int size) {
+    public Page<ProductDto> findAll(int page, int size) {
         if (page < 1 || size < 1) {
             throw new IllegalArgumentException("Page and size must be greater than 0");
         }
@@ -38,66 +38,49 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDto findProductById(Long id) {
+    public Optional<ProductDto> findById(Long id) {
         return productRepository.findById(id)
                 .map(ProductMapper.getInstance()::fromProductEntityToProduct)
-                .map(ProductMapper.getInstance()::fromProductToProductDto)
-                .orElseThrow(() -> new IllegalArgumentException("Product with id " + id + " not found"));
+                .map(ProductMapper.getInstance()::fromProductToProductDto);
     }
 
     @Override
-    public ProductDto createProduct(ProductDto productdto) {
-        if(productRepository.findById(productdto.id()).isPresent()) {
-            throw new IllegalArgumentException("Product with id " + productdto.id() + " already exists");
-        }
+    public Optional<ProductDto> findByName(String name) {
+        return productRepository.findByName(name)
+                .map(ProductMapper.getInstance()::fromProductEntityToProduct)
+                .map(ProductMapper.getInstance()::fromProductToProductDto);
+    }
 
-        // BookDto → Book → BookEntity
+    @Override
+    public Optional<ProductDto> findByCategory(String category) {
+        return productRepository.findByCategory(category)
+                .map(ProductMapper.getInstance()::fromProductEntityToProduct)
+                .map(ProductMapper.getInstance()::fromProductToProductDto);
+    }
+
+    @Override
+    public Optional<ProductDto> findByRating(int min, int max) {
+        return productRepository.findByRating(min, max)
+                .map(ProductMapper.getInstance()::fromProductEntityToProduct)
+                .map(ProductMapper.getInstance()::fromProductToProductDto);
+    }
+
+    @Override
+    public ProductDto save(ProductDto productDto) {
         ProductEntity entityToSave = ProductMapper.getInstance()
-                .fromProductToProductEntity(
-                        ProductMapper.getInstance().fromProductDtoToProduct(productdto)
-                );
-
-        ProductEntity savedEntity = productRepository.save(entityToSave);
-        return ProductMapper.getInstance()
-                .fromProductToProductDto(
-                        ProductMapper.getInstance().fromProductEntityToProduct(savedEntity)
-                );
-    }
-
-    @Override
-    public ProductDto updateProduct(ProductDto productDto) {
-        ProductEntity existingEntity = productRepository.findById(productDto.id())
-                .orElseThrow(() -> new IllegalArgumentException("Product with id " + productDto.id() + " not found"));
-
-
-        ProductEntity updatedEntity = ProductMapper.getInstance()
                 .fromProductToProductEntity(
                         ProductMapper.getInstance().fromProductDtoToProduct(productDto)
                 );
 
-        // Mantener el ID de la entidad existente
-        ProductEntity entityToSave = new ProductEntity(
-                existingEntity.id(),
-                updatedEntity.category(),
-                updatedEntity.name(),
-                updatedEntity.productDescription(),
-                updatedEntity.basePrice(),
-                updatedEntity.discountPercentage(),
-                updatedEntity.pictureProduct(),
-                updatedEntity.quantity(),
-                updatedEntity.rating()
-        );
-
         ProductEntity savedEntity = productRepository.save(entityToSave);
         return ProductMapper.getInstance()
                 .fromProductToProductDto(
                         ProductMapper.getInstance().fromProductEntityToProduct(savedEntity)
                 );
-
     }
 
     @Override
-    public void deleteProduct(Long id) {
+    public void deleteById(Long id) {
         productRepository.deleteById(id);
     }
 }

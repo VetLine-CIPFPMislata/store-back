@@ -89,21 +89,19 @@ public class ProductJpaEntity {
     }
 
     public BigDecimal getBasePrice() {
-        return basePrice;
+        return basePrice != null ? basePrice : BigDecimal.ZERO;
     }
 
     public void setBasePrice(BigDecimal basePrice) {
-        this.basePrice = basePrice;
+        this.basePrice = basePrice != null ? basePrice : BigDecimal.ZERO;
     }
 
     public BigDecimal getDiscountPercentage() {
-        return discountPercentage;
+        return discountPercentage != null ? discountPercentage : BigDecimal.ZERO;
     }
-
     public void setDiscountPercentage(BigDecimal discountPercentage) {
-        this.discountPercentage = discountPercentage;
+        this.discountPercentage = discountPercentage != null ? discountPercentage : BigDecimal.ZERO;
     }
-
     public String getPictureProduct() {
         return pictureProduct;
     }

@@ -3,7 +3,7 @@ package org.example.storeback.persistence.dao.jpa.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "product_category")
+@Table(name = "categories")
 public class CategoryJpaEntity {
 
     @Id

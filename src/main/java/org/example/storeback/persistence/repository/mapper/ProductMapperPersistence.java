@@ -1,6 +1,8 @@
 package org.example.storeback.persistence.repository.mapper;
 
+import org.example.storeback.domain.models.Category;
 import org.example.storeback.domain.repository.entity.ProductEntity;
+import org.example.storeback.persistence.dao.jpa.entity.CategoryJpaEntity;
 import org.example.storeback.persistence.dao.jpa.entity.ProductJpaEntity;
 
 public class ProductMapperPersistence {
@@ -17,13 +19,42 @@ public class ProductMapperPersistence {
         return INSTANCE;
     }
 
-    public ProductEntity fromProductJpaEntityToProductEntity(ProductEntity productEntity){
-        if (productEntity == null){
+    public ProductEntity fromProductJpaEntityToProductEntity(ProductJpaEntity productJpaEntity){
+        if (productJpaEntity == null){
             return null;
         }
+        Category category = new Category(
+                productJpaEntity.getCategory().getId(),
+                productJpaEntity.getCategory().getName(),
+                productJpaEntity.getCategory().getDescription()
+        );
         return new ProductEntity(
+                productJpaEntity.getId(),
+                category,
+                productJpaEntity.getName(),
+                productJpaEntity.getProductDescription(),
+                productJpaEntity.getBasePrice(),
+                productJpaEntity.getDiscountPercentage(),
+                productJpaEntity.getPictureProduct(),
+                productJpaEntity.getQuantity(),
+                productJpaEntity.getRating()
+        );
+    }
+
+    public ProductJpaEntity fromProductEntityToProductJpaEntity(ProductEntity productEntity){
+        if (productEntity == null){
+            return  null;
+        }
+
+        CategoryJpaEntity categoryJpaEntity = new CategoryJpaEntity(
+                productEntity.category().getId(),
+                productEntity.category().getName(),
+                productEntity.category().getDescription()
+        );
+
+        return new ProductJpaEntity(
                 productEntity.id(),
-                productEntity.category(),
+                categoryJpaEntity,
                 productEntity.name(),
                 productEntity.productDescription(),
                 productEntity.basePrice(),
@@ -31,24 +62,6 @@ public class ProductMapperPersistence {
                 productEntity.pictureProduct(),
                 productEntity.quantity(),
                 productEntity.rating()
-        );
-    }
-
-    public ProductJpaEntity fromProductEntityToProductJpaEntity(ProductJpaEntity productEntity){
-        if (productEntity == null){
-            return  null;
-        }
-
-        return new ProductJpaEntity(
-                productEntity.getId(),
-                productEntity.getCategory(),
-                productEntity.getName(),
-                productEntity.getProductDescription(),
-                productEntity.getBasePrice(),
-                productEntity.getDiscountPercentage(),
-                productEntity.getPictureProduct(),
-                productEntity.getQuantity(),
-                productEntity.getRating()
         );
     }
 

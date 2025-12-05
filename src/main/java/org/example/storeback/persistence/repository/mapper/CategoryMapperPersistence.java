@@ -15,26 +15,26 @@ public class CategoryMapperPersistence {
     public  CategoryMapperPersistence() {
     }
 
-    public CategoryJpaEntity fromCategoryJpaEntityToCategoryEntity(CategoryEntity categoryEntity) {
+    public CategoryEntity fromCategoryJpaEntityToCategoryEntity(CategoryJpaEntity categoryJpaEntity) {
+        if (categoryJpaEntity == null) {
+            return null;
+        }
+        return new CategoryEntity(
+                categoryJpaEntity.getId(),
+                categoryJpaEntity.getName(),
+                categoryJpaEntity.getDescription()
+        );
+    }
+
+    public  CategoryJpaEntity fromCategoryEntityToCategoryJpaEntity(CategoryEntity categoryEntity) {
         if (categoryEntity == null) {
             return null;
         }
+
         return new CategoryJpaEntity(
                 categoryEntity.id(),
                 categoryEntity.name(),
                 categoryEntity.description()
-        );
-    }
-
-    public  CategoryJpaEntity fromCategoryEntityToCategoryJpaEntity(CategoryJpaEntity categoryEntity) {
-        if (categoryEntity == null) {
-            return null;
-        }
-
-        return new CategoryJpaEntity(
-                categoryEntity.getId(),
-                categoryEntity.getName(),
-                categoryEntity.getDescription()
         );
     }
 }

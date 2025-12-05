@@ -46,21 +46,20 @@ public class Product {
     public String getProductDescription() { return productDescription; }
     public BigDecimal getPrice() { return price; }
     public BigDecimal getBaseprice() { return basePrice; }
-    public BigDecimal getDiscountPercentage() { return discountPercentage; }
+    public BigDecimal getDiscountPercentage() { return discountPercentage != null ? discountPercentage : BigDecimal.ZERO; }
     public String getPictureProduct() { return pictureProduct; }
     public int getQuantity() { return quantity; }
     public int getRating() { return rating; }
 
 
-    public BigDecimal calculateFinalPrice() {
-        if( basePrice == null ) {
-            return BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP);
+    private BigDecimal calculateFinalPrice() {
+        if (basePrice == null || basePrice.compareTo(BigDecimal.ZERO) == 0) {
+            return BigDecimal.ZERO;
         }
-
-        BigDecimal discount = basePrice
-                .multiply(discountPercentage)
-                .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
-
-        return basePrice.subtract(discount).setScale(2, RoundingMode.HALF_UP);
+        if (discountPercentage == null || discountPercentage.compareTo(BigDecimal.ZERO) == 0) {
+            return basePrice;
+        }
+        BigDecimal discount = basePrice.multiply(discountPercentage.divide(BigDecimal.valueOf(100)));
+        return basePrice.subtract(discount);
     }
 }

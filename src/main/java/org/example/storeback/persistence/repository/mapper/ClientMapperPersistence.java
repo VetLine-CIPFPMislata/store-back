@@ -16,11 +16,26 @@ public class ClientMapperPersistence {
     public  ClientMapperPersistence() {
     }
 
-    public ClientEntity fromClientJpaEntityToClientEntity(ClientEntity clientEntity) {
-        if (clientEntity == null) {
+    public ClientEntity fromClientJpaEntityToClientEntity(ClientJpaEntity clientJpaEntity) {
+        if (clientJpaEntity == null) {
             return null;
         }
         return new ClientEntity(
+                clientJpaEntity.getId(),
+                clientJpaEntity.getName(),
+                clientJpaEntity.getEmail(),
+                clientJpaEntity.getPassword(),
+                clientJpaEntity.getPhone(),
+                clientJpaEntity.getCartId(),
+                clientJpaEntity.getRole()
+        );
+    }
+
+    public  ClientJpaEntity fromClientEntityToClientJpaEntity(ClientEntity clientEntity) {
+        if (clientEntity == null) {
+            return  null;
+        }
+        return new ClientJpaEntity(
                 clientEntity.id(),
                 clientEntity.name(),
                 clientEntity.email(),
@@ -28,21 +43,6 @@ public class ClientMapperPersistence {
                 clientEntity.phone(),
                 clientEntity.cartId(),
                 clientEntity.role()
-        );
-    }
-
-    public  ClientEntity fromClientEntityToClientJpaEntity(ClientJpaEntity clientEntity) {
-        if (clientEntity == null) {
-            return  null;
-        }
-        return new ClientEntity(
-                clientEntity.getId(),
-                clientEntity.getName(),
-                clientEntity.getEmail(),
-                clientEntity.getPassword(),
-                clientEntity.getPhone(),
-                clientEntity.getCartId(),
-                clientEntity.getRole()
         );
     }
 
