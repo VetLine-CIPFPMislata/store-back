@@ -1,12 +1,10 @@
-package org.example.storeback.domain.service.dto;
+package org.example.storeback.controller.webmodel.request;
 
-
-public record ClientDto(
-        Long id,
+public record ClientInsertRequest(
         String name,
+        String phone,
         String email,
         String password,
-        String phone,
         Long cartId,
         String role
 ) {

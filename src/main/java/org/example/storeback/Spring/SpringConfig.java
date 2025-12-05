@@ -1,8 +1,6 @@
 package org.example.storeback.Spring;
 
-import jakarta.persistence.EntityManager;
-import org.example.storeback.domain.mappers.CategoryMapper;
-import org.example.storeback.domain.mappers.ProductMapper;
+
 import org.example.storeback.domain.repository.CategoryRepository;
 import org.example.storeback.domain.repository.ClientRepository;
 import org.example.storeback.domain.repository.ProductRepository;
@@ -21,8 +19,7 @@ import org.example.storeback.persistence.dao.jpa.impl.ProductJpaDaoImpl;
 import org.example.storeback.persistence.repository.CategoryRepositoryImpl;
 import org.example.storeback.persistence.repository.ClientRepositoryImpl;
 import org.example.storeback.persistence.repository.ProductRepositoryImpl;
-import org.example.storeback.persistence.repository.mapper.CategoryMapperPersistence;
-import org.example.storeback.persistence.repository.mapper.ProductMapperPersistence;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -51,4 +48,11 @@ public class SpringConfig {
     public CategoryService categoryService(CategoryRepository categoryRepository){return new CategoryServiceImpl(categoryRepository);}
     @Bean
     public CategoryJpaDao categoryJpaDao(){return new CategoryJpaDaoImpl();}
+
+    @Bean
+    public ClientRepository clientRepository(ClientJpaDao clientJpaDao){return new ClientRepositoryImpl(clientJpaDao);}
+    @Bean
+    public ClientJpaDao clientJpaDao(){return new ClientJpaDaoImpl();}
+    @Bean
+    public ClientService clientService(ClientRepository clientRepository){return new ClientServiceImpl(clientRepository);}
 }

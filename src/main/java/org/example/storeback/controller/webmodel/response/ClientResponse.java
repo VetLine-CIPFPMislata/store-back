@@ -1,13 +1,11 @@
-package org.example.storeback.domain.service.dto;
+package org.example.storeback.controller.webmodel.response;
 
-
-public record ClientDto(
+public record ClientResponse (
         Long id,
         String name,
+        String phone,
         String email,
         String password,
-        String phone,
         Long cartId,
         String role
-) {
-}
+    ){}
