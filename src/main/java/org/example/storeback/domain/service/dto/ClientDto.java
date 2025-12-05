@@ -26,6 +26,7 @@ public record ClientDto(
 
         Long cartId,
 
+        @NotBlank(message = "El rol no puede estar vacío")
         @Size(max = 50, message = "El rol no puede exceder 50 caracteres")
         String role
 ) {

@@ -36,9 +36,9 @@ public class ClientMapperPresentation {
         return new ClientDto(
                 null,
                 clientInsert.name(),
-                clientInsert.phone(),
                 clientInsert.email(),
                 clientInsert.password(),
+                clientInsert.phone(),
                 clientInsert.cartId(),
                 clientInsert.role()
         );
@@ -49,13 +49,13 @@ public class ClientMapperPresentation {
             return null;
         }
         return new ClientDto(
-                clientUpdate.id(),
+                id,
                 clientUpdate.name(),
-                clientUpdate.phone(),
                 clientUpdate.email(),
                 clientUpdate.password(),
+                clientUpdate.phone(),
                 clientUpdate.cartId(),
-                null
+                clientUpdate.role()
         );
     }
 }
