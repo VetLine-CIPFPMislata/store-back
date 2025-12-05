@@ -7,6 +7,7 @@ import org.example.storeback.persistence.dao.ProductJpaDao;
 import org.example.storeback.persistence.dao.jpa.entity.ProductJpaEntity;
 import org.example.storeback.persistence.repository.mapper.ProductMapperPersistence;
 
+import java.util.List;
 import java.util.Optional;
 
 public class ProductRepositoryImpl implements ProductRepository {
@@ -47,9 +48,8 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public Optional<ProductEntity> findByRating(int min, int max) {
-        return productJpaDao.findByRating(min, max)
-                .map(ProductMapperPersistence.getInstance()::fromProductJpaEntityToProductEntity);
+    public List<ProductEntity> findByRating(int min, int max) {
+        return productJpaDao.findByRating(min, max);
     }
 
     @Override

@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("api/products")
 public class ProductController {
@@ -33,28 +35,30 @@ public class ProductController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/search/name")
-    public ResponseEntity<ProductDto> getProductByName(@RequestParam String name) {
+    @GetMapping("/search/name/{name}")
+    public ResponseEntity<ProductDto> getProductByName(@PathVariable String name) {
         return productService.findByName(name)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/search/category")
-    public ResponseEntity<ProductDto> getProductByCategory(@RequestParam String category) {
+    @GetMapping("/search/category/{category}")
+    public ResponseEntity<ProductDto> getProductByCategory(@PathVariable String category) {
         return productService.findByCategory(category)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/search/rating")
-    public ResponseEntity<ProductDto> getProductByRating(
-            @RequestParam int min,
-            @RequestParam int max
+    @GetMapping("/search/rating/{min}/{max}")
+    public ResponseEntity<List<ProductDto>> getProductByRating(
+            @PathVariable int min,
+            @PathVariable int max
     ) {
-        return productService.findByRating(min, max)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        List<ProductDto> products = productService.findByRating(min, max);
+        if (products.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(products);
     }
 
     @PostMapping

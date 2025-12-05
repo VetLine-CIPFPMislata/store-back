@@ -61,7 +61,7 @@ public class ProductJpaDaoImpl implements ProductJpaDao {
     }
 
     @Override
-    public Optional<ProductJpaEntity> findByRating(int min, int max) {
+    public List<ProductEntity> findByRating(int min, int max) {
         TypedQuery<ProductJpaEntity> query = entityManager.createQuery(
                 "SELECT p FROM ProductJpaEntity p WHERE p.rating BETWEEN :min AND :max",
                 ProductJpaEntity.class
@@ -69,7 +69,10 @@ public class ProductJpaDaoImpl implements ProductJpaDao {
         query.setParameter("min", min);
         query.setParameter("max", max);
 
-        return query.getResultStream().findFirst();
+        List<ProductJpaEntity> jpaEntities = query.getResultList();
+        return jpaEntities.stream()
+                .map(ProductMapperPersistence.getInstance()::fromProductJpaEntityToProductEntity)
+                .toList();
     }
 
     @Override

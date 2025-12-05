@@ -59,10 +59,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Optional<ProductDto> findByRating(int min, int max) {
+    public List<ProductDto> findByRating(int min, int max) {
         return productRepository.findByRating(min, max)
+                .stream()
                 .map(ProductMapper.getInstance()::fromProductEntityToProduct)
-                .map(ProductMapper.getInstance()::fromProductToProductDto);
+                .map(ProductMapper.getInstance()::fromProductToProductDto)
+                .toList();
     }
 
     @Override
