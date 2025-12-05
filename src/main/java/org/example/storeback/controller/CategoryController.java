@@ -4,6 +4,9 @@ import org.example.storeback.controller.webmodel.request.CategoryInsertRequest;
 import org.example.storeback.controller.webmodel.response.CategoryResponse;
 import org.example.storeback.domain.service.CategoryService;
 import org.example.storeback.domain.service.dto.CategoryDto;
+import org.example.storeback.domain.validation.DtoValidator;
+import org.example.storeback.domain.exception.ValidationException;
+import org.example.storeback.controller.mapper.CategoryMapperPresentation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,8 +39,7 @@ public class CategoryController {
                 .map(categoryDto -> ResponseEntity.ok(new CategoryResponse(categoryDto.id(), categoryDto.name())))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
-    // GET by Name
-    @GetMapping("/search/{name}")
+     @GetMapping("/search/{name}")
     public ResponseEntity<CategoryResponse> findCategoryByName(@PathVariable String name) {
         Optional<CategoryDto> categoryDtoOptional = categoryService.findByName(name);
         return categoryDtoOptional
@@ -46,9 +48,15 @@ public class CategoryController {
     }
     @PostMapping
     public ResponseEntity<CategoryResponse> createCategory(@RequestBody CategoryInsertRequest request) {
-        CategoryDto categoryToCreate = new CategoryDto(null, request.name(), request.description());
+        CategoryDto categoryToCreate = CategoryMapperPresentation.fromCategoryInsertToCategoryDto(request);
+        try {
+            DtoValidator.validate(categoryToCreate);
+        } catch (ValidationException ex) {
+            return ResponseEntity.badRequest().build();
+        }
+
         CategoryDto createdCategory = categoryService.save(categoryToCreate);
-        CategoryResponse response = new CategoryResponse(createdCategory.id(), createdCategory.name());
+        CategoryResponse response = CategoryMapperPresentation.fromCategoryDtoToCategoryResponse(createdCategory);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
