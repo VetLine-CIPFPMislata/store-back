@@ -1,8 +1,13 @@
 package org.example.storeback.controller;
 
+import org.example.storeback.controller.mapper.ProductMapperPresentation;
+import org.example.storeback.controller.webmodel.request.ProductInsertRequest;
+import org.example.storeback.controller.webmodel.request.ProductUpdateRequest;
+import org.example.storeback.controller.webmodel.response.ProductResponse;
 import org.example.storeback.domain.models.Page;
 import org.example.storeback.domain.service.ProductService;
 import org.example.storeback.domain.service.dto.ProductDto;
+import org.example.storeback.domain.validation.DtoValidator;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,37 +25,50 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<ProductDto>> getAllProducts(
+    public ResponseEntity<Page<ProductResponse>> getAllProducts(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
+
         Page<ProductDto> products = productService.findAll(page, size);
-        return ResponseEntity.ok(products);
+        List<ProductResponse> responses = products.data().stream()
+                .map(ProductMapperPresentation.getInstance()::fromDtoToResponse)
+                .toList();
+        Page<ProductResponse> responsePage = new Page<>(
+                responses,
+                products.pageNumber(),
+                products.pageSize(),
+                products.totalElements()
+        );
+        return ResponseEntity.ok(responsePage);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductDto> getProductById(@PathVariable Long id) {
+    public ResponseEntity<ProductResponse> getProductById(@PathVariable Long id) {
         return productService.findById(id)
+                .map(ProductMapperPresentation.getInstance()::fromDtoToResponse)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/search/name/{name}")
-    public ResponseEntity<ProductDto> getProductByName(@PathVariable String name) {
+    public ResponseEntity<ProductResponse> getProductByName(@PathVariable String name) {
         return productService.findByName(name)
+                .map(ProductMapperPresentation.getInstance()::fromDtoToResponse)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/search/category/{category}")
-    public ResponseEntity<ProductDto> getProductByCategory(@PathVariable String category) {
+    public ResponseEntity<ProductResponse> getProductByCategory(@PathVariable String category) {
         return productService.findByCategory(category)
+                .map(ProductMapperPresentation.getInstance()::fromDtoToResponse)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/search/rating/{min}/{max}")
-    public ResponseEntity<List<ProductDto>> getProductByRating(
+    public ResponseEntity<List<ProductResponse>> getProductByRating(
             @PathVariable int min,
             @PathVariable int max
     ) {
@@ -58,24 +76,33 @@ public class ProductController {
         if (products.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(products);
+        List<ProductResponse> responses = products.stream()
+                .map(ProductMapperPresentation.getInstance()::fromDtoToResponse)
+                .toList();
+        return ResponseEntity.ok(responses);
     }
 
     @PostMapping
-    public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto productDto) {
+    public ResponseEntity<ProductResponse> createProduct(@RequestBody ProductInsertRequest request) {
+        ProductDto productDto = ProductMapperPresentation.getInstance().fromInsertRequestToDto(request);
+        DtoValidator.validate(productDto);
         ProductDto createdProduct = productService.save(productDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdProduct);
+        ProductResponse response = ProductMapperPresentation.getInstance().fromDtoToResponse(createdProduct);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductDto> updateProduct(
+    public ResponseEntity<ProductResponse> updateProduct(
             @PathVariable Long id,
-            @RequestBody ProductDto productDto
+            @RequestBody ProductUpdateRequest request
     ) {
         return productService.findById(id)
                 .map(existing -> {
+                    ProductDto productDto = ProductMapperPresentation.getInstance().fromUpdateRequestToDto(request);
+                    DtoValidator.validate(productDto);
                     ProductDto updated = productService.save(productDto);
-                    return ResponseEntity.ok(updated);
+                    ProductResponse response = ProductMapperPresentation.getInstance().fromDtoToResponse(updated);
+                    return ResponseEntity.ok(response);
                 })
                 .orElse(ResponseEntity.notFound().build());
     }

@@ -44,7 +44,7 @@ public class ClientMapperPresentation {
         );
     }
 
-    public static ClientDto fromClientUpdateToClientDto(ClientUpdateRequest clientUpdate){
+    public static ClientDto fromClientUpdateToClientDto(Long id, ClientUpdateRequest clientUpdate){
         if (clientUpdate == null){
             return null;
         }

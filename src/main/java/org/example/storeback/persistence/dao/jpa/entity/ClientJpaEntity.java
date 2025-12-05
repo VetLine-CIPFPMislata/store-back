@@ -8,7 +8,7 @@ public class ClientJpaEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "id_client")
     private Long id;
 
     @Column(nullable = false)
@@ -23,7 +23,7 @@ public class ClientJpaEntity {
     @Column
     private String phone;
 
-    @Column(name = "cart_id")
+    @Column(name = "id_cart")
     private Long cartId;
 
     @Column(nullable = false)
