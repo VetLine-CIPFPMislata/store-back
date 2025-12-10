@@ -2,7 +2,6 @@ package org.example.storeback.domain.models;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Objects;
 
 public class Product {
     private final Long id;
@@ -33,8 +32,8 @@ public class Product {
         this.name = name;
         this.productDescription = productDescription;
         this.basePrice = basePrice;
-        this.price = calculateFinalPrice();
         this.discountPercentage = discountPercentage;
+        this.price = calculateFinalPrice();
         this.pictureProduct = pictureProduct;
         this.quantity = quantity;
         this.rating = rating;
@@ -59,7 +58,8 @@ public class Product {
         if (discountPercentage == null || discountPercentage.compareTo(BigDecimal.ZERO) == 0) {
             return basePrice;
         }
-        BigDecimal discount = basePrice.multiply(discountPercentage.divide(BigDecimal.valueOf(100)));
-        return basePrice.subtract(discount);
+        BigDecimal percent = discountPercentage.divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_UP);
+        BigDecimal discount = basePrice.multiply(percent);
+        return basePrice.subtract(discount).setScale(2, RoundingMode.HALF_UP);
     }
 }

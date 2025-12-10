@@ -1,11 +1,8 @@
 package org.example.storeback.domain.mappers;
 
-import org.example.storeback.domain.models.Category;
 import org.example.storeback.domain.models.Product;
 import org.example.storeback.domain.repository.entity.ProductEntity;
 import org.example.storeback.domain.service.dto.ProductDto;
-
-import java.math.BigDecimal;
 
 public class ProductMapper {
     private static ProductMapper instance;
@@ -19,6 +16,7 @@ public class ProductMapper {
         }
         return instance;
     }
+
     public ProductDto fromProductToProductDto(Product product) {
         if (product == null) {
             throw new IllegalArgumentException("Product cannot be null");

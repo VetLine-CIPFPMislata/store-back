@@ -99,9 +99,11 @@ public class ProductJpaEntity {
     public BigDecimal getDiscountPercentage() {
         return discountPercentage != null ? discountPercentage : BigDecimal.ZERO;
     }
+
     public void setDiscountPercentage(BigDecimal discountPercentage) {
         this.discountPercentage = discountPercentage != null ? discountPercentage : BigDecimal.ZERO;
     }
+
     public String getPictureProduct() {
         return pictureProduct;
     }
@@ -126,4 +128,3 @@ public class ProductJpaEntity {
         this.rating = rating;
     }
 }
-
