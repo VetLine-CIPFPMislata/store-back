@@ -12,7 +12,7 @@ public interface ProductService {
     Page<ProductDto> findAll(int page, int size);
     Optional<ProductDto> findById(Long id);
     Optional<ProductDto> findByName(String name);
-    Optional<ProductDto> findByCategory(String category);
+    List<ProductDto> findByCategory(String category);
     List<ProductDto> findByRating(int min, int max);
     ProductDto save(ProductDto productDto);
     void deleteById(Long id);

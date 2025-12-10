@@ -50,14 +50,14 @@ public class ProductJpaDaoImpl implements ProductJpaDao {
     }
 
     @Override
-    public Optional<ProductJpaEntity> findByCategory(String category) {
+    public List<ProductJpaEntity> findByCategory(String category) {
         TypedQuery<ProductJpaEntity> query = entityManager.createQuery(
                 "SELECT p FROM ProductJpaEntity p WHERE p.category.name = :category",
                 ProductJpaEntity.class
         );
         query.setParameter("category", category);
 
-        return query.getResultStream().findFirst();
+        return query.getResultList();
     }
 
     @Override

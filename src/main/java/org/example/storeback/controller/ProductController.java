@@ -4,6 +4,7 @@ import org.example.storeback.controller.mapper.ProductMapperPresentation;
 import org.example.storeback.controller.webmodel.request.ProductInsertRequest;
 import org.example.storeback.controller.webmodel.request.ProductUpdateRequest;
 import org.example.storeback.controller.webmodel.response.ProductResponse;
+import org.example.storeback.domain.models.Category;
 import org.example.storeback.domain.models.Page;
 import org.example.storeback.domain.service.ProductService;
 import org.example.storeback.domain.service.dto.ProductDto;
@@ -60,11 +61,15 @@ public class ProductController {
     }
 
     @GetMapping("/search/category/{category}")
-    public ResponseEntity<ProductResponse> getProductByCategory(@PathVariable String category) {
-        return productService.findByCategory(category)
+    public ResponseEntity<List<ProductResponse>> getProductsByCategory(@PathVariable String category) {
+        List<ProductDto> products = productService.findByCategory(category);
+        if (products.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        List<ProductResponse> responses = products.stream()
                 .map(ProductMapperPresentation.getInstance()::fromDtoToResponse)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .toList();
+        return ResponseEntity.ok(responses);
     }
 
     @GetMapping("/search/rating/{min}/{max}")

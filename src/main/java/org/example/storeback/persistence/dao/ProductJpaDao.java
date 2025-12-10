@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface ProductJpaDao {
     Page<ProductJpaEntity> findAll(int page, int size);
     Optional<ProductJpaEntity> findByName(String name);
-    Optional<ProductJpaEntity> findByCategory(String category);
+    List<ProductJpaEntity> findByCategory(String category);
     List<ProductEntity> findByRating(int min, int max);
     Optional<ProductJpaEntity> findById(Long id);
     ProductJpaEntity save(ProductJpaEntity productJpaEntity);

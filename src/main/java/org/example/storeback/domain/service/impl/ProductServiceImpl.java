@@ -52,10 +52,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Optional<ProductDto> findByCategory(String category) {
+    public List<ProductDto> findByCategory(String category) {
         return productRepository.findByCategory(category)
+                .stream()
                 .map(ProductMapper.getInstance()::fromProductEntityToProduct)
-                .map(ProductMapper.getInstance()::fromProductToProductDto);
+                .map(ProductMapper.getInstance()::fromProductToProductDto)
+                .toList();
     }
 
     @Override

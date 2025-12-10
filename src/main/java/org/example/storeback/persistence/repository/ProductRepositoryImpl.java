@@ -42,9 +42,10 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public Optional<ProductEntity> findByCategory(String category) {
-        return productJpaDao.findByCategory(category)
-                .map(ProductMapperPersistence.getInstance()::fromProductJpaEntityToProductEntity);
+    public List<ProductEntity> findByCategory(String category) {
+        return productJpaDao.findByCategory(category).stream()
+                .map(ProductMapperPersistence.getInstance()::fromProductJpaEntityToProductEntity)
+                .toList();
     }
 
     @Override
