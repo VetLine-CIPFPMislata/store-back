@@ -9,7 +9,7 @@ public class Client {
     private final String password;
     private final String phone;
     private final Long cartId;
-    private final String role;
+    private final Role role;
 
     public Client(Long id,
                   String name,
@@ -17,7 +17,7 @@ public class Client {
                   String password,
                   String phone,
                   Long cartId,
-                  String role) {
+                  Role role) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -33,5 +33,5 @@ public class Client {
     public String getPassword() { return password; }
     public String getPhone() { return phone; }
     public Long getCartId() { return cartId; }
-    public String getRole() { return role; }
+    public Role getRole() { return role; }
 }

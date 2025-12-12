@@ -2,12 +2,10 @@ package org.example.storeback.controller.webmodel.response;
 
 import org.example.storeback.domain.models.Role;
 
-public record ClientResponse (
-        Long id,
-        String name,
-        String phone,
+public record LoginResponse(
+        String token,
         String email,
-        String password,
-        Long cartId,
+        String name,
         Role role
-    ){}
+) {
+}

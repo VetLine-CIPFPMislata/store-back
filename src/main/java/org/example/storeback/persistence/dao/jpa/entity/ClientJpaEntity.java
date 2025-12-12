@@ -1,6 +1,7 @@
 package org.example.storeback.persistence.dao.jpa.entity;
 
 import jakarta.persistence.*;
+import org.example.storeback.domain.models.Role;
 
 @Entity
 @Table(name = "clients")
@@ -26,14 +27,15 @@ public class ClientJpaEntity {
     @Column(name = "id_cart")
     private Long cartId;
 
-    @Column(nullable = false)
-    private String role;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 50)
+    private Role role;
 
     public ClientJpaEntity() {
     }
 
     public ClientJpaEntity(Long id, String name, String email, String password,
-                           String phone, Long cartId, String role) {
+                           String phone, Long cartId, Role role) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -91,11 +93,11 @@ public class ClientJpaEntity {
         this.cartId = cartId;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 }

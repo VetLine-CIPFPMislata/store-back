@@ -3,7 +3,9 @@ package org.example.storeback.domain.service.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import org.example.storeback.domain.models.Role;
 
 public record ClientDto(
         Long id,
@@ -26,8 +28,7 @@ public record ClientDto(
 
         Long cartId,
 
-        @NotBlank(message = "El rol no puede estar vacío")
-        @Size(max = 50, message = "El rol no puede exceder 50 caracteres")
-        String role
+        @NotNull(message = "El rol no puede estar vacío")
+        Role role
 ) {
 }

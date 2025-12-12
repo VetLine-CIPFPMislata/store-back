@@ -1,5 +1,7 @@
 package org.example.storeback.domain.repository.entity;
 
+import org.example.storeback.domain.models.Role;
+
 public record ClientEntity(
         Long id,
         String name,
@@ -7,6 +9,6 @@ public record ClientEntity(
         String password,
         String phone,
         Long cartId,
-        String role){
+        Role role){
 
 }

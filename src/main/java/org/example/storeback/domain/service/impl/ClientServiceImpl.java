@@ -67,9 +67,10 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public Optional<LoginDto> login(String email, String password) {
+    public Optional<ClientDto> login(String email, String password) {
         return clientRepository.findByEmail(email)
                 .filter(client -> client.password().equals(password))
-                .map(client -> new LoginDto(client.email(), client.password()));
+                .map(ClientMapper.getInstance()::fromClientEntityToClient)
+                .map(ClientMapper.getInstance()::fromClientToClientDto);
     }
 }

@@ -6,9 +6,12 @@ import org.example.storeback.controller.webmodel.request.ProductUpdateRequest;
 import org.example.storeback.controller.webmodel.response.ProductResponse;
 import org.example.storeback.domain.models.Category;
 import org.example.storeback.domain.models.Page;
+import org.example.storeback.domain.models.Role;
 import org.example.storeback.domain.service.ProductService;
 import org.example.storeback.domain.service.dto.ProductDto;
 import org.example.storeback.domain.validation.DtoValidator;
+import org.example.storeback.domain.validation.RequiresAuth;
+import org.example.storeback.domain.validation.RequiresRole;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -87,6 +90,7 @@ public class ProductController {
         return ResponseEntity.ok(responses);
     }
 
+    @RequiresRole(Role.ADMIN)
     @PostMapping
     public ResponseEntity<ProductResponse> createProduct(@RequestBody ProductInsertRequest request) {
         ProductDto productDto = ProductMapperPresentation.getInstance().fromInsertRequestToDto(request);
@@ -96,6 +100,7 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @RequiresRole(Role.ADMIN)
     @PutMapping("/{id}")
     public ResponseEntity<ProductResponse> updateProduct(
             @PathVariable Long id,
@@ -112,6 +117,7 @@ public class ProductController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @RequiresRole(Role.ADMIN)
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         return productService.findById(id)
