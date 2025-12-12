@@ -2,11 +2,13 @@ package org.example.storeback.controller;
 
 import org.example.storeback.controller.webmodel.request.CategoryInsertRequest;
 import org.example.storeback.controller.webmodel.response.CategoryResponse;
+import org.example.storeback.domain.models.Role;
 import org.example.storeback.domain.service.CategoryService;
 import org.example.storeback.domain.service.dto.CategoryDto;
 import org.example.storeback.domain.validation.DtoValidator;
 import org.example.storeback.domain.exception.ValidationException;
 import org.example.storeback.controller.mapper.CategoryMapperPresentation;
+import org.example.storeback.domain.validation.RequiresRole;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -46,6 +48,8 @@ public class CategoryController {
                 .map(categoryDto -> ResponseEntity.ok(new CategoryResponse(categoryDto.id(), categoryDto.name())))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+    @RequiresRole(Role.ADMIN)
     @PostMapping
     public ResponseEntity<CategoryResponse> createCategory(@RequestBody CategoryInsertRequest request) {
         CategoryDto categoryToCreate = CategoryMapperPresentation.fromCategoryInsertToCategoryDto(request);
@@ -59,7 +63,7 @@ public class CategoryController {
         CategoryResponse response = CategoryMapperPresentation.fromCategoryDtoToCategoryResponse(createdCategory);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
-
+    @RequiresRole(Role.ADMIN)
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
         categoryService.deleteById(id);
