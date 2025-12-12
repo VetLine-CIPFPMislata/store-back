@@ -1,6 +1,7 @@
 package org.example.storeback.controller;
 
 import org.example.storeback.controller.webmodel.request.CategoryInsertRequest;
+import org.example.storeback.controller.webmodel.request.CategoryUpdateRequest;
 import org.example.storeback.controller.webmodel.response.CategoryResponse;
 import org.example.storeback.domain.models.Role;
 import org.example.storeback.domain.service.CategoryService;
@@ -61,6 +62,7 @@ public class CategoryController {
         CategoryResponse response = CategoryMapperPresentation.fromCategoryDtoToCategoryResponse(createdCategory);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+    @RequiresRole(Role.ADMIN)
     @PutMapping("/{id}")
     public ResponseEntity<CategoryResponse> updateCategory(@PathVariable Long id, @RequestBody CategoryUpdateRequest request) {
         CategoryDto categoryToUpdate = CategoryMapperPresentation.fromCategoryUpdateToCategoryDto(request, id);
