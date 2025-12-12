@@ -1,6 +1,7 @@
 package org.example.storeback.controller.mapper;
 
 import org.example.storeback.controller.webmodel.request.CategoryInsertRequest;
+import org.example.storeback.controller.webmodel.request.CategoryUpdateRequest;
 import org.example.storeback.controller.webmodel.response.CategoryResponse;
 
 import org.example.storeback.domain.service.dto.CategoryDto;
@@ -32,6 +33,16 @@ public class CategoryMapperPresentation {
             null,
                 categoryInsert.name(),
                 categoryInsert.description()
+        );
+    }
+    public static CategoryDto fromCategoryUpdateToCategoryDto(CategoryUpdateRequest updateRequest, Long id){
+        if (updateRequest == null){
+            return null;
+        }
+        return new CategoryDto(
+                id,
+                updateRequest.name(),
+                updateRequest.description()
         );
     }
 }

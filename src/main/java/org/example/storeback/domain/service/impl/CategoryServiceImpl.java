@@ -42,21 +42,31 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryDto save(CategoryDto categoryDto) {
-        if (categoryDto.id() != null && categoryRepository.findById(categoryDto.id()).isPresent()) {
-            throw new IllegalArgumentException("Category with id " + categoryDto.id() + " already exists");
+        if (categoryDto == null) {
+            throw new IllegalArgumentException("CategoryDto cannot be null");
         }
 
-        CategoryEntity entityToSave = CategoryMapper.getInstance()
-                .fromCategoryToCategoryEntity(
-                        CategoryMapper.getInstance().fromCategoryDtoToCategory(categoryDto)
-                );
+        CategoryMapper mapper = CategoryMapper.getInstance();
 
-        CategoryEntity savedEntity = categoryRepository.save(entityToSave);
+        var domain = mapper.fromCategoryDtoToCategory(categoryDto);
+        CategoryEntity entityToSave = mapper.fromCategoryToCategoryEntity(domain);
 
-        return CategoryMapper.getInstance()
-                .fromCategoryToCategoryDto(
-                        CategoryMapper.getInstance().fromCategoryEntityToCategory(savedEntity)
-                );
+        if (categoryDto.id() == null) {
+            CategoryEntity savedEntity = categoryRepository.save(entityToSave);
+            return mapper.fromCategoryToCategoryDto(
+                    mapper.fromCategoryEntityToCategory(savedEntity)
+            );
+        } else {
+            Long id = categoryDto.id();
+            if (categoryRepository.findById(id).isEmpty()) {
+                throw new IllegalArgumentException("Category with id " + id + " not found");
+            }
+
+            CategoryEntity savedEntity = categoryRepository.save(entityToSave);
+            return mapper.fromCategoryToCategoryDto(
+                    mapper.fromCategoryEntityToCategory(savedEntity)
+            );
+        }
     }
 
     @Override

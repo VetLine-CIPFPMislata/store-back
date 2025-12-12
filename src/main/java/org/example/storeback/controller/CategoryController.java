@@ -48,8 +48,6 @@ public class CategoryController {
                 .map(categoryDto -> ResponseEntity.ok(new CategoryResponse(categoryDto.id(), categoryDto.name())))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
-
-    @RequiresRole(Role.ADMIN)
     @PostMapping
     public ResponseEntity<CategoryResponse> createCategory(@RequestBody CategoryInsertRequest request) {
         CategoryDto categoryToCreate = CategoryMapperPresentation.fromCategoryInsertToCategoryDto(request);
@@ -63,6 +61,25 @@ public class CategoryController {
         CategoryResponse response = CategoryMapperPresentation.fromCategoryDtoToCategoryResponse(createdCategory);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+    @PutMapping("/{id}")
+    public ResponseEntity<CategoryResponse> updateCategory(@PathVariable Long id, @RequestBody CategoryUpdateRequest request) {
+        CategoryDto categoryToUpdate = CategoryMapperPresentation.fromCategoryUpdateToCategoryDto(request, id);
+        try {
+            DtoValidator.validate(categoryToUpdate);
+        } catch (ValidationException ex) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        Optional<CategoryDto> existing = categoryService.findById(id);
+        if (existing.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        CategoryDto updated = categoryService.save(categoryToUpdate);
+        CategoryResponse response = CategoryMapperPresentation.fromCategoryDtoToCategoryResponse(updated);
+        return ResponseEntity.ok(response);
+    }
+
     @RequiresRole(Role.ADMIN)
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
