@@ -10,7 +10,6 @@ import org.example.storeback.domain.models.Role;
 import org.example.storeback.domain.service.ProductService;
 import org.example.storeback.domain.service.dto.ProductDto;
 import org.example.storeback.domain.validation.DtoValidator;
-import org.example.storeback.domain.validation.RequiresAuth;
 import org.example.storeback.domain.validation.RequiresRole;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

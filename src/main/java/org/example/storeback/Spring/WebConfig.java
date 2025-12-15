@@ -1,23 +1,26 @@
 package org.example.storeback.Spring;
 
-import org.example.storeback.controller.interceptor.AuthInterceptor;
+import org.example.storeback.controller.filter.AuthFilter;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class WebConfig implements WebMvcConfigurer {
+public class WebConfig {
 
-    private final AuthInterceptor authInterceptor;
+    private final AuthFilter authFilter;
 
-    public WebConfig(AuthInterceptor authInterceptor) {
-        this.authInterceptor = authInterceptor;
+    public WebConfig(AuthFilter authFilter) {
+        this.authFilter = authFilter;
     }
 
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(authInterceptor)
-                .addPathPatterns("/api/**")
-                .excludePathPatterns("/api/auth/login");
+    @Bean
+    public FilterRegistrationBean<AuthFilter> authFilterRegistration() {
+        FilterRegistrationBean<AuthFilter> registration = new FilterRegistrationBean<>();
+        registration.setFilter(authFilter);
+        registration.addUrlPatterns("/api/*");
+        registration.setOrder(1); // Prioridad del filtro
+        registration.setName("authFilter");
+        return registration;
     }
 }
