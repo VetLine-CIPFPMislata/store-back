@@ -23,7 +23,7 @@ public class ClientMapperPresentation {
                 clientDto.name(),
                 clientDto.phone(),
                 clientDto.email(),
-                clientDto.password(),
+                null,
                 clientDto.cartId(),
                 clientDto.role()
         );

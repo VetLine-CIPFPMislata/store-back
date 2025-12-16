@@ -5,6 +5,7 @@ import org.example.storeback.domain.models.Client;
 import org.example.storeback.domain.repository.ClientRepository;
 import org.example.storeback.domain.repository.entity.ClientEntity;
 import org.example.storeback.domain.service.ClientService;
+import org.example.storeback.domain.service.PasswordEncryptionService;
 import org.example.storeback.domain.service.dto.ClientDto;
 import org.example.storeback.domain.service.dto.LoginDto;
 
@@ -13,9 +14,11 @@ import java.util.Optional;
 public class ClientServiceImpl implements ClientService {
 
     private final ClientRepository clientRepository;
+    private final PasswordEncryptionService passwordEncryptionService;
 
-    public ClientServiceImpl(ClientRepository clientRepository) {
+    public ClientServiceImpl(ClientRepository clientRepository, PasswordEncryptionService passwordEncryptionService) {
         this.clientRepository = clientRepository;
+        this.passwordEncryptionService = passwordEncryptionService;
     }
 
     @Override
@@ -40,13 +43,31 @@ public class ClientServiceImpl implements ClientService {
                 throw new IllegalArgumentException("Client with id " + clientDto.id() + " not found");
             }
         } else {
-            // Si no tiene ID, es creación - verificar email único
             if (clientRepository.existsByEmail(clientDto.email())) {
                 throw new IllegalArgumentException("Client with email " + clientDto.email() + " already exists");
             }
         }
 
-        Client client = ClientMapper.getInstance().fromClientDtoToClient(clientDto);
+        String rawPassword = clientDto.password();
+        String passwordToStore;
+        if (rawPassword == null) {
+            passwordToStore = null;
+        } else if (rawPassword.startsWith("$2a$") || rawPassword.startsWith("$2y$") || rawPassword.startsWith("$2b$")) {
+            passwordToStore = rawPassword;
+        } else {
+            passwordToStore = passwordEncryptionService.encryptPassword(rawPassword);
+        }
+
+        Client client = new Client(
+                clientDto.id(),
+                clientDto.name(),
+                clientDto.email(),
+                passwordToStore,
+                clientDto.phone(),
+                clientDto.cartId(),
+                clientDto.role()
+        );
+
         ClientEntity entity = ClientMapper.getInstance().fromClientToClientEntity(client);
         ClientEntity savedEntity = clientRepository.save(entity);
         Client savedClient = ClientMapper.getInstance().fromClientEntityToClient(savedEntity);
@@ -69,7 +90,7 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public Optional<ClientDto> login(String email, String password) {
         return clientRepository.findByEmail(email)
-                .filter(client -> client.password().equals(password))
+                .filter(entity -> passwordEncryptionService.matches(password, entity.password()))
                 .map(ClientMapper.getInstance()::fromClientEntityToClient)
                 .map(ClientMapper.getInstance()::fromClientToClientDto);
     }

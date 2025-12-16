@@ -8,6 +8,7 @@ import org.example.storeback.domain.repository.SessionRepository;
 import org.example.storeback.domain.service.CategoryService;
 import org.example.storeback.domain.service.AuthService;
 import org.example.storeback.domain.service.ClientService;
+import org.example.storeback.domain.service.PasswordEncryptionService;
 import org.example.storeback.domain.service.ProductService;
 import org.example.storeback.domain.service.impl.CategoryServiceImpl;
 import org.example.storeback.domain.service.impl.AuthServiceImpl;
@@ -31,6 +32,11 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class SpringConfig {
+
+    @Bean
+    public PasswordEncryptionService passwordEncryptionService() {
+        return new BCryptPasswordEncryptionService();
+    }
 
     @Bean
     public ProductJpaDao productJpaDao() {
@@ -60,7 +66,9 @@ public class SpringConfig {
     @Bean
     public ClientJpaDao clientJpaDao(){return new ClientJpaDaoImpl();}
     @Bean
-    public ClientService clientService(ClientRepository clientRepository){return new ClientServiceImpl(clientRepository);}
+    public ClientService clientService(ClientRepository clientRepository, PasswordEncryptionService passwordEncryptionService) {
+        return new ClientServiceImpl(clientRepository, passwordEncryptionService);
+    }
 
     @Bean
     public SessionJpaDao sessionJpaDao() {
