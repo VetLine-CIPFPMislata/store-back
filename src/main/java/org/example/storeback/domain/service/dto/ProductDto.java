@@ -30,6 +30,7 @@ public record ProductDto(
         @Digits(integer = 3, fraction = 2, message = "El porcentaje debe tener máximo 3 dígitos enteros y 2 decimales")
         BigDecimal discountPercentage,
 
+
         @Size(max = 500, message = "La URL de la imagen no puede exceder 500 caracteres")
         String pictureProduct,
 

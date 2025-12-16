@@ -3,6 +3,8 @@ package org.example.storeback.domain.models;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+import org.example.storeback.domain.exception.BusinessException;
+
 public class Product {
     private final Long id;
     private final Category category;
@@ -51,12 +53,16 @@ public class Product {
     public int getRating() { return rating; }
 
 
-    private BigDecimal calculateFinalPrice() {
+    public BigDecimal calculateFinalPrice() {
+
         if (basePrice == null || basePrice.compareTo(BigDecimal.ZERO) == 0) {
             return BigDecimal.ZERO;
         }
         if (discountPercentage == null || discountPercentage.compareTo(BigDecimal.ZERO) == 0) {
             return basePrice;
+        }
+        if (discountPercentage.compareTo(BigDecimal.valueOf(100)) > 0) {
+            throw new BusinessException("Discount percentage cannot be greater than 100: " + discountPercentage);
         }
         BigDecimal percent = discountPercentage.divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_UP);
         BigDecimal discount = basePrice.multiply(percent);
