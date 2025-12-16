@@ -85,9 +85,13 @@ public class ProductJpaDaoImpl implements ProductJpaDao {
     public ProductJpaEntity save(ProductJpaEntity productJpaEntity) {
         if (productJpaEntity.getId() == null) {
             entityManager.persist(productJpaEntity);
+            entityManager.flush();
             return productJpaEntity;
         } else {
-            return entityManager.merge(productJpaEntity);
+            ProductJpaEntity merged = entityManager.merge(productJpaEntity);
+            entityManager.flush();
+            entityManager.refresh(merged);
+            return merged;
         }
     }
 

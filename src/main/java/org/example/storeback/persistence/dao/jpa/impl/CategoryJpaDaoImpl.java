@@ -62,6 +62,8 @@ public class CategoryJpaDaoImpl implements CategoryJpaDao {
             return mapper.fromCategoryJpaEntityToCategoryEntity(jpa);
         } else {
             CategoryJpaEntity merged = entityManager.merge(jpa);
+            entityManager.flush();
+            entityManager.refresh(merged);
             return mapper.fromCategoryJpaEntityToCategoryEntity(merged);
         }
     }
