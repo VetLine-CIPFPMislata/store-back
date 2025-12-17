@@ -1,8 +1,6 @@
-package org.example.storeback.domain.model;
+package org.example.storeback.domain.models;
 
 import org.example.storeback.domain.exception.BusinessException;
-import org.example.storeback.domain.models.Category;
-import org.example.storeback.domain.models.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
