@@ -3,9 +3,6 @@ DELETE FROM cart_items;
 DELETE FROM products;
 DELETE FROM categories;
 
--- Resetear AUTO_INCREMENT
-ALTER TABLE categories AUTO_INCREMENT = 1;
-ALTER TABLE products AUTO_INCREMENT = 1;
 
 -- Insertar categorías para tienda de mascotas
 INSERT INTO categories (name, description) VALUES
