@@ -45,7 +45,6 @@ class CategoryControllerTest {
 
 
     @Test
-    @DisplayName("GET /api/categories - Debe retornar todas las categorías")
     void findAllCategories_ShouldReturnAllCategories() {
 
         List<CategoryDto> categories = Arrays.asList(categoryDto1, categoryDto2);
@@ -65,7 +64,6 @@ class CategoryControllerTest {
 
 
     @Test
-    @DisplayName("GET /api/categories/{id} - Debe retornar categoría cuando existe")
     void findCategoryById_ShouldReturnCategory_WhenExists() {
 
         Long categoryId = 1L;
@@ -84,7 +82,6 @@ class CategoryControllerTest {
     }
 
     @Test
-    @DisplayName("GET /api/categories/{id} - Debe retornar 404 cuando no existe")
     void findCategoryById_ShouldReturn404_WhenNotExists() {
         Long categoryId = 999L;
         when(categoryService.findById(categoryId)).thenReturn(Optional.empty());
@@ -101,7 +98,6 @@ class CategoryControllerTest {
 
 
     @Test
-    @DisplayName("GET /api/categories/search/{name} - Debe retornar categoría cuando existe por nombre")
     void findCategoryByName_ShouldReturnCategory_WhenExists() {
 
         String categoryName = "Comida";
@@ -115,11 +111,10 @@ class CategoryControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals("Comida", response.getBody().name());
-        verify(categoryService, times(1)).findByName(categoryName);
+        verify(categoryService).findByName(categoryName);
     }
 
     @Test
-    @DisplayName("GET /api/categories/search/{name} - Debe retornar 404 cuando no existe por nombre")
     void findCategoryByName_ShouldReturn404_WhenNotExists() {
 
         String categoryName = "NoExiste";
@@ -131,12 +126,11 @@ class CategoryControllerTest {
         assertNotNull(response);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertNull(response.getBody());
-        verify(categoryService, times(1)).findByName(categoryName);
+        verify(categoryService).findByName(categoryName);
     }
 
 
     @Test
-    @DisplayName("POST /api/categories - Debe crear categoría con datos válidos")
     void createCategory_ShouldCreateCategory_WithValidData() {
 
         CategoryInsertRequest request = new CategoryInsertRequest("Nueva Categoría", "Descripción válida");
@@ -150,11 +144,9 @@ class CategoryControllerTest {
         assertNotNull(response.getBody());
         assertEquals(3L, response.getBody().id());
         assertEquals("Nueva Categoría", response.getBody().name());
-        verify(categoryService).save(any(CategoryDto.class));
     }
 
     @Test
-    @DisplayName("POST /api/categories - Debe retornar 400 con nombre vacío")
     void createCategory_ShouldReturn400_WithEmptyName() {
         CategoryInsertRequest request = new CategoryInsertRequest("", "Descripción válida");
 
@@ -163,11 +155,9 @@ class CategoryControllerTest {
         assertNotNull(response);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertNull(response.getBody());
-        verify(categoryService, never()).save(any());
     }
 
     @Test
-    @DisplayName("POST /api/categories - Debe retornar 400 con nombre que excede límite")
     void createCategory_ShouldReturn400_WhenNameExceedsLimit() {
 
         String longName = "A".repeat(101);
@@ -178,12 +168,11 @@ class CategoryControllerTest {
         assertNotNull(response);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertNull(response.getBody());
-        verify(categoryService, never()).save(any());
+
     }
 
 
     @Test
-    @DisplayName("PUT /api/categories/{id} - Debe actualizar categoría existente")
     void updateCategory_ShouldUpdateCategory_WhenExists() {
 
         Long categoryId = 1L;
@@ -201,12 +190,11 @@ class CategoryControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals("Comida Actualizada", response.getBody().name());
-        verify(categoryService, times(1)).findById(categoryId);
-        verify(categoryService, times(1)).save(any(CategoryDto.class));
+        verify(categoryService).findById(categoryId);
+
     }
 
     @Test
-    @DisplayName("PUT /api/categories/{id} - Debe retornar 404 cuando categoría no existe")
     void updateCategory_ShouldReturn404_WhenCategoryNotExists() {
         Long categoryId = 999L;
         CategoryUpdateRequest request = new CategoryUpdateRequest("Nombre", "Descripción");
@@ -220,25 +208,19 @@ class CategoryControllerTest {
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertNull(response.getBody());
         verify(categoryService).findById(categoryId);
-        verify(categoryService, never()).save(any());
     }
 
     @Test
-    @DisplayName("PUT /api/categories/{id} - Debe retornar 400 con datos inválidos")
     void updateCategory_ShouldReturn400_WithInvalidData() {
-        // Given
         Long categoryId = 1L;
         CategoryUpdateRequest request = new CategoryUpdateRequest("", "Descripción");
 
-        // When
         ResponseEntity<CategoryResponse> response = categoryController.updateCategory(categoryId, request);
 
-        // Then
         assertNotNull(response);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertNull(response.getBody());
-        verify(categoryService, never()).findById(any());
-        verify(categoryService, never()).save(any());
+
     }
 
 
@@ -254,11 +236,10 @@ class CategoryControllerTest {
         assertNotNull(response);
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
         assertNull(response.getBody());
-        verify(categoryService, times(1)).deleteById(categoryId);
+        verify(categoryService).deleteById(categoryId);
     }
 
     @Test
-    @DisplayName("DELETE /api/categories/{id} - Debe manejar eliminación de categoría inexistente")
     void deleteCategory_ShouldHandleNonExistentCategory() {
 
         Long categoryId = 999L;

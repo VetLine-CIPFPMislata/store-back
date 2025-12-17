@@ -3,9 +3,11 @@ package org.example.storeback.controller;
 import org.example.storeback.controller.webmodel.request.LoginRequest;
 import org.example.storeback.controller.webmodel.response.ClientResponse;
 import org.example.storeback.controller.webmodel.response.LoginResponse;
+import org.example.storeback.domain.models.Role;
 import org.example.storeback.domain.service.AuthService;
 import org.example.storeback.domain.service.ClientService;
 import org.example.storeback.domain.service.dto.ClientDto;
+import org.example.storeback.domain.validation.RequiresRole;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +26,7 @@ public class AuthController {
         this.clientService = clientService;
         this.authService = authService;
     }
+
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
@@ -64,7 +67,7 @@ public class AuthController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<ClientResponse> getCurrentUser(@RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<ClientResponse> getAdminUser(@RequestHeader("Authorization") String authHeader) {
         String token = extractTokenFromHeader(authHeader);
 
         if (token == null) {
@@ -91,6 +94,36 @@ public class AuthController {
 
         return ResponseEntity.ok(response);
     }
+    @GetMapping("/me/any")
+    public ResponseEntity<ClientResponse> getCurrentUser(@RequestHeader("Authorization") String authHeader) {
+        String token = extractTokenFromHeader(authHeader);
+
+        if (token == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
+        Optional<ClientDto> userOptional = authService.getAnyUserFromToken(token);
+
+        if (userOptional.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        ClientDto user = userOptional.get();
+
+        ClientResponse response = new ClientResponse(
+                user.id(),
+                user.name(),
+                user.phone(),
+                user.email(),
+                null,
+                user.cartId(),
+                user.role()
+        );
+
+        return ResponseEntity.ok(response);
+    }
+
+
 
     private String extractTokenFromHeader(String authHeader) {
         if (authHeader != null && authHeader.startsWith("Bearer ")) {

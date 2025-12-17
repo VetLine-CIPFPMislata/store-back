@@ -113,18 +113,18 @@ public class ProductDtoTest {
     }
     @Test
     void productDtoInvalidQuantity(){
-    Long id = 1L;
-    Category category = new Category(1L, "Electronics", "Electronic devices");
-    String name = "Test";
-    String description = "Test description";
-    BigDecimal price = new BigDecimal(100);
-    BigDecimal basePrice = new BigDecimal(100);
-    BigDecimal discountPercentage = new BigDecimal(10);
-    String picture = "http://test.com";
-    int quantity = -10;
-    int rating = 5;
-    ProductDto productDto = new ProductDto(id, category, name, description, basePrice, price, discountPercentage, picture, quantity, rating);
-    assertThrows(ValidationException.class, () -> DtoValidator.validate(productDto));
+        Long id = 1L;
+        Category category = new Category(1L, "Electronics", "Electronic devices");
+        String name = "Test";
+        String description = "Test description";
+        BigDecimal price = new BigDecimal(100);
+        BigDecimal basePrice = new BigDecimal(100);
+        BigDecimal discountPercentage = new BigDecimal(10);
+        String picture = "http://test.com";
+        int quantity = -10;
+        int rating = 5;
+        ProductDto productDto = new ProductDto(id, category, name, description, basePrice, price, discountPercentage, picture, quantity, rating);
+        assertThrows(ValidationException.class, () -> DtoValidator.validate(productDto));
     }
 
     @Test

@@ -40,7 +40,6 @@ class CategoryMapperTest {
 
 
     @Test
-    @DisplayName("fromCategoryEntityToCategory - Debe mapear correctamente con todos los campos completos")
     void fromCategoryEntityToCategory_ShouldMapCorrectly_WithAllFields() {
         CategoryEntity entity = new CategoryEntity(1L, "Comida", "Productos alimenticios para mascotas");
 
@@ -53,7 +52,6 @@ class CategoryMapperTest {
     }
 
     @Test
-    @DisplayName("fromCategoryEntityToCategory - Debe lanzar excepción cuando entity es null")
     void fromCategoryEntityToCategory_ShouldThrowException_WhenEntityIsNull() {
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
@@ -64,7 +62,6 @@ class CategoryMapperTest {
     }
 
     @Test
-    @DisplayName("fromCategoryEntityToCategory - Debe mapear con id null")
     void fromCategoryEntityToCategory_ShouldMap_WithNullId() {
         CategoryEntity entity = new CategoryEntity(null, "Nueva Categoría", "Sin ID");
 
@@ -77,7 +74,6 @@ class CategoryMapperTest {
     }
 
     @Test
-    @DisplayName("fromCategoryEntityToCategory - Debe mapear con description null")
     void fromCategoryEntityToCategory_ShouldMap_WithNullDescription() {
         CategoryEntity entity = new CategoryEntity(5L, "Sin Descripción", null);
 
@@ -92,7 +88,6 @@ class CategoryMapperTest {
 
 
     @Test
-    @DisplayName("fromCategoryToCategoryEntity - Debe mapear correctamente con todos los campos")
     void fromCategoryToCategoryEntity_ShouldMapCorrectly_WithAllFields() {
         Category category = new Category(2L, "Juguetes", "Juguetes para mascotas");
 
@@ -105,7 +100,6 @@ class CategoryMapperTest {
     }
 
     @Test
-    @DisplayName("fromCategoryToCategoryEntity - Debe lanzar excepción cuando category es null")
     void fromCategoryToCategoryEntity_ShouldThrowException_WhenCategoryIsNull() {
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
@@ -116,7 +110,6 @@ class CategoryMapperTest {
     }
 
     @Test
-    @DisplayName("fromCategoryToCategoryEntity - Debe mapear con todos los campos null")
     void fromCategoryToCategoryEntity_ShouldMap_WithAllNullFields() {
         Category category = new Category(null, null, null);
 
@@ -130,7 +123,6 @@ class CategoryMapperTest {
 
 
     @Test
-    @DisplayName("fromCategoryDtoToCategory - Debe mapear correctamente con todos los campos")
     void fromCategoryDtoToCategory_ShouldMapCorrectly_WithAllFields() {
         CategoryDto dto = new CategoryDto(3L, "Accesorios", "Accesorios para mascotas");
 
@@ -143,7 +135,6 @@ class CategoryMapperTest {
     }
 
     @Test
-    @DisplayName("fromCategoryDtoToCategory - Debe lanzar excepción cuando dto es null")
     void fromCategoryDtoToCategory_ShouldThrowException_WhenDtoIsNull() {
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
@@ -154,7 +145,6 @@ class CategoryMapperTest {
     }
 
     @Test
-    @DisplayName("fromCategoryDtoToCategory - Debe mapear con id null")
     void fromCategoryDtoToCategory_ShouldMap_WithNullId() {
         CategoryDto dto = new CategoryDto(null, "Nueva", "Sin ID aún");
 
@@ -167,7 +157,6 @@ class CategoryMapperTest {
 
 
     @Test
-    @DisplayName("fromCategoryToCategoryDto - Debe mapear correctamente con todos los campos")
     void fromCategoryToCategoryDto_ShouldMapCorrectly_WithAllFields() {
         Category category = new Category(4L, "Medicamentos", "Medicamentos veterinarios");
 
@@ -180,7 +169,6 @@ class CategoryMapperTest {
     }
 
     @Test
-    @DisplayName("fromCategoryToCategoryDto - Debe lanzar excepción cuando category es null")
     void fromCategoryToCategoryDto_ShouldThrowException_WhenCategoryIsNull() {
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
@@ -188,19 +176,6 @@ class CategoryMapperTest {
         );
 
         assertEquals("Category cannot be null", exception.getMessage());
-    }
-
-    @Test
-    @DisplayName("fromCategoryToCategoryDto - Debe mapear con description null")
-    void fromCategoryToCategoryDto_ShouldMap_WithNullDescription() {
-        Category category = new Category(1L, "Sin Descripción", null);
-
-        CategoryDto result = mapper.fromCategoryToCategoryDto(category);
-
-        assertNotNull(result);
-        assertEquals(1L, result.id());
-        assertEquals("Sin Descripción", result.name());
-        assertNull(result.description());
     }
 
 

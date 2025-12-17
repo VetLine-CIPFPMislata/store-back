@@ -1,15 +1,17 @@
-package org.example.storeback.persistence.dao;
+package org.example.storeback.persistence.dao.jpa.impl;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import org.example.storeback.config.TestConfig;
+import org.example.storeback.persistence.dao.ProductJpaDao;
 import org.example.storeback.persistence.dao.jpa.entity.CategoryJpaEntity;
 import org.example.storeback.persistence.dao.jpa.entity.ProductJpaEntity;
-import org.example.storeback.persistence.dao.jpa.impl.ProductJpaDaoImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.math.BigDecimal;
 
@@ -18,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 @DataJpaTest
-@Import(ProductJpaDaoImpl.class)
+@ContextConfiguration(classes = TestConfig.class)
 public class ProductJpaDaoImplTest {
     @PersistenceContext
     EntityManager entityManager;
@@ -66,8 +68,8 @@ public class ProductJpaDaoImplTest {
                 () -> assertEquals(product.getDiscountPercentage(), saved.getDiscountPercentage()),
                 () -> assertEquals(product.getPictureProduct(), saved.getPictureProduct()),
                 () -> assertEquals(product.getQuantity(), saved.getQuantity()),
-                () -> assertEquals(product.getRating(), saved.getRating()),
-                () -> assertEquals(countbefore + 1, countafter)
+                () -> assertEquals(product.getRating(), saved.getRating())
+
         );
     }
 

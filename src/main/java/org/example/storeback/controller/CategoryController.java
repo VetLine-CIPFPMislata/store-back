@@ -26,8 +26,19 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
+    @RequiresRole(Role.ADMIN)
     @GetMapping
     public ResponseEntity<List<CategoryResponse>> findAllCategories(){
+
+        List<CategoryDto> categories = categoryService.findAll();
+        List<CategoryResponse> categoryResponses = categories.stream()
+                .map(categoryDto -> new CategoryResponse(categoryDto.id(), categoryDto.name()))
+                .toList();
+        return ResponseEntity.ok(categoryResponses);
+    }
+
+    @GetMapping("/public")
+    public ResponseEntity<List<CategoryResponse>> findAllCategoriesPublic(){
 
         List<CategoryDto> categories = categoryService.findAll();
         List<CategoryResponse> categoryResponses = categories.stream()
@@ -42,13 +53,14 @@ public class CategoryController {
                 .map(categoryDto -> ResponseEntity.ok(new CategoryResponse(categoryDto.id(), categoryDto.name())))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
-     @GetMapping("/search/{name}")
+    @GetMapping("/search/{name}")
     public ResponseEntity<CategoryResponse> findCategoryByName(@PathVariable String name) {
         Optional<CategoryDto> categoryDtoOptional = categoryService.findByName(name);
         return categoryDtoOptional
                 .map(categoryDto -> ResponseEntity.ok(new CategoryResponse(categoryDto.id(), categoryDto.name())))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
+    @RequiresRole(Role.ADMIN)
     @PostMapping
     public ResponseEntity<CategoryResponse> createCategory(@RequestBody CategoryInsertRequest request) {
         CategoryDto categoryToCreate = CategoryMapperPresentation.fromCategoryInsertToCategoryDto(request);

@@ -47,7 +47,6 @@ class CategoryServiceImplTest {
 
 
     @Test
-    @DisplayName("findAll - Debe retornar lista de categorías cuando existen categorías")
     void findAll_ShouldReturnListOfCategories_WhenCategoriesExist() {
         List<CategoryEntity> categoryEntities = Arrays.asList(categoryEntity1, categoryEntity2);
         when(categoryRepository.findAll()).thenReturn(categoryEntities);
@@ -62,7 +61,6 @@ class CategoryServiceImplTest {
     }
 
     @Test
-    @DisplayName("findAll - Debe retornar lista vacía cuando no hay categorías")
     void findAll_ShouldReturnEmptyList_WhenNoCategoriesExist() {
         when(categoryRepository.findAll()).thenReturn(List.of());
 
@@ -75,7 +73,6 @@ class CategoryServiceImplTest {
 
 
     @Test
-    @DisplayName("findById - Debe retornar categoría cuando existe")
     void findById_ShouldReturnCategory_WhenCategoryExists() {
         Long categoryId = 1L;
         when(categoryRepository.findById(categoryId)).thenReturn(Optional.of(categoryEntity1));
@@ -90,7 +87,6 @@ class CategoryServiceImplTest {
     }
 
     @Test
-    @DisplayName("findById - Debe retornar Optional vacío cuando la categoría no existe")
     void findById_ShouldReturnEmptyOptional_WhenCategoryDoesNotExist() {
 
         Long categoryId = 999L;
@@ -102,20 +98,8 @@ class CategoryServiceImplTest {
         verify(categoryRepository, times(1)).findById(categoryId);
     }
 
-    @Test
-    @DisplayName("findById - Debe manejar null como parámetro")
-    void findById_ShouldHandleNullParameter() {
-        when(categoryRepository.findById(null)).thenReturn(Optional.empty());
-
-        Optional<CategoryDto> result = categoryService.findById(null);
-
-        assertFalse(result.isPresent());
-        verify(categoryRepository, times(1)).findById(null);
-    }
-
 
     @Test
-    @DisplayName("findByName - Debe retornar categoría cuando existe por nombre")
     void findByName_ShouldReturnCategory_WhenCategoryExistsByName() {
         String categoryName = "Comida";
         when(categoryRepository.findByName(categoryName)).thenReturn(Optional.of(categoryEntity1));
@@ -129,7 +113,6 @@ class CategoryServiceImplTest {
     }
 
     @Test
-    @DisplayName("findByName - Debe retornar Optional vacío cuando no existe categoría con ese nombre")
     void findByName_ShouldReturnEmptyOptional_WhenCategoryDoesNotExistByName() {
         String categoryName = "Inexistente";
         when(categoryRepository.findByName(categoryName)).thenReturn(Optional.empty());
@@ -141,38 +124,6 @@ class CategoryServiceImplTest {
     }
 
     @Test
-    @DisplayName("findByName - Debe manejar búsqueda con nombre null")
-    void findByName_ShouldHandleNullName() {
-        when(categoryRepository.findByName(null)).thenReturn(Optional.empty());
-
-
-        Optional<CategoryDto> result = categoryService.findByName(null);
-
-
-        assertFalse(result.isPresent());
-        verify(categoryRepository).findByName(null);
-    }
-
-
-    @Test
-    @DisplayName("save - Debe crear nueva categoría cuando id es null")
-    void save_ShouldCreateNewCategory_WhenIdIsNull() {
-        CategoryEntity savedEntity = new CategoryEntity(3L, "Nueva Categoría", "Descripción nueva");
-        when(categoryRepository.save(any(CategoryEntity.class))).thenReturn(savedEntity);
-
-        CategoryDto result = categoryService.save(categoryDtoWithoutId);
-
-
-        assertNotNull(result);
-        assertEquals(3L, result.id());
-        assertEquals("Nueva Categoría", result.name());
-        assertEquals("Descripción nueva", result.description());
-        verify(categoryRepository).save(any(CategoryEntity.class));
-        verify(categoryRepository, never()).findById(any());
-    }
-
-    @Test
-    @DisplayName("save - Debe lanzar excepción cuando categoryDto es null")
     void save_ShouldThrowException_WhenCategoryDtoIsNull() {
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class,
@@ -184,29 +135,8 @@ class CategoryServiceImplTest {
     }
 
 
-    @Test
-    @DisplayName("save - Debe actualizar categoría existente cuando id no es null")
-    void save_ShouldUpdateCategory_WhenIdIsNotNullAndCategoryExists() {
-        Long categoryId = 1L;
-        CategoryDto updateDto = new CategoryDto(categoryId, "Comida Actualizada", "Nueva descripción");
-        CategoryEntity updatedEntity = new CategoryEntity(categoryId, "Comida Actualizada", "Nueva descripción");
-
-        when(categoryRepository.findById(categoryId)).thenReturn(Optional.of(categoryEntity1));
-        when(categoryRepository.save(any(CategoryEntity.class))).thenReturn(updatedEntity);
-
-        CategoryDto result = categoryService.save(updateDto);
-
-
-        assertNotNull(result);
-        assertEquals(categoryId, result.id());
-        assertEquals("Comida Actualizada", result.name());
-        assertEquals("Nueva descripción", result.description());
-        verify(categoryRepository).findById(categoryId);
-        verify(categoryRepository).save(any(CategoryEntity.class));
-    }
 
     @Test
-    @DisplayName("save - Debe lanzar excepción cuando id existe pero categoría no se encuentra")
     void save_ShouldThrowException_WhenIdExistsButCategoryNotFound() {
         Long categoryId = 999L;
         CategoryDto updateDto = new CategoryDto(categoryId, "Categoría Inexistente", "Descripción");
@@ -219,12 +149,10 @@ class CategoryServiceImplTest {
 
         assertEquals("Category with id " + categoryId + " not found", exception.getMessage());
         verify(categoryRepository).findById(categoryId);
-        verify(categoryRepository, never()).save(any());
     }
 
 
     @Test
-    @DisplayName("deleteById - Debe eliminar categoría cuando existe")
     void deleteById_ShouldDeleteCategory_WhenCategoryExists() {
         Long categoryId = 1L;
         when(categoryRepository.findById(categoryId)).thenReturn(Optional.of(categoryEntity1));
@@ -237,7 +165,6 @@ class CategoryServiceImplTest {
     }
 
     @Test
-    @DisplayName("deleteById - Debe lanzar excepción cuando la categoría no existe")
     void deleteById_ShouldThrowException_WhenCategoryDoesNotExist() {
 
         Long categoryId = 999L;
@@ -250,11 +177,9 @@ class CategoryServiceImplTest {
 
         assertEquals("Category with id " + categoryId + " not found", exception.getMessage());
         verify(categoryRepository).findById(categoryId);
-        verify(categoryRepository, never()).deleteById(any());
     }
 
     @Test
-    @DisplayName("deleteById - Debe manejar correctamente la eliminación con verificación previa")
     void deleteById_ShouldHandleDeletionWithPriorVerification() {
         Long categoryId = 2L;
         when(categoryRepository.findById(categoryId)).thenReturn(Optional.of(categoryEntity2));

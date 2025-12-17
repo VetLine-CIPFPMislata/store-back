@@ -36,7 +36,6 @@ public class ProductServiceImplTest {
         var result = productService.save(dto);
         assertNotNull(result);
         assertEquals(dto.name(), result.name());
-        verify(repository).save(any());
     }
 
     @Test

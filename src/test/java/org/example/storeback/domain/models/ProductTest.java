@@ -16,7 +16,6 @@ public class ProductTest {
     @Test
     @DisplayName("dado un descuento del 30% a un producto comprobar nuevo precio es correcto")
     void testCalculatePriceWithDiscount() {
-        // Given
         Product product = new Product(
         1L,
             new Category(23L,
@@ -32,10 +31,9 @@ public class ProductTest {
         );
 
 
-        // When
         BigDecimal priceWithDiscount = product.calculateFinalPrice();
 
-        // Then
+
         assertEquals(new BigDecimal("70.00"), priceWithDiscount);
     }
     @ParameterizedTest
@@ -153,7 +151,6 @@ public class ProductTest {
                 1,
                 3
         );
-        // Calcular expected usando misma lógica que en Product
         BigDecimal percent = discount.divide(new BigDecimal("100"), 4, RoundingMode.HALF_UP);
         BigDecimal expected = basePrice.subtract(basePrice.multiply(percent)).setScale(2, RoundingMode.HALF_UP);
         BigDecimal result = product.calculateFinalPrice();

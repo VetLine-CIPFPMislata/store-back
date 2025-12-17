@@ -25,7 +25,6 @@ class CategoryDtoTest {
 
 
     @Test
-    @DisplayName("Debe crear CategoryDto válido con todos los campos")
     void shouldCreateValidCategoryDto_WithAllFields() {
         CategoryDto dto = new CategoryDto(1L, "Comida", "Productos alimenticios para mascotas");
 
@@ -38,7 +37,6 @@ class CategoryDtoTest {
     }
 
     @Test
-    @DisplayName("Debe crear CategoryDto válido con id null")
     void shouldCreateValidCategoryDto_WithNullId() {
         CategoryDto dto = new CategoryDto(null, "Nueva Categoría", "Descripción");
 
@@ -50,7 +48,6 @@ class CategoryDtoTest {
     }
 
     @Test
-    @DisplayName("Debe crear CategoryDto válido con description null")
     void shouldCreateValidCategoryDto_WithNullDescription() {
         CategoryDto dto = new CategoryDto(1L, "Sin Descripción", null);
 
@@ -61,7 +58,6 @@ class CategoryDtoTest {
     }
 
     @Test
-    @DisplayName("Debe crear CategoryDto válido con description vacía")
     void shouldCreateValidCategoryDto_WithEmptyDescription() {
         CategoryDto dto = new CategoryDto(1L, "Nombre", "");
 
@@ -73,7 +69,6 @@ class CategoryDtoTest {
 
 
     @Test
-    @DisplayName("name es null")
     void validationFails_WhenNameIsNull() {
         CategoryDto dto = new CategoryDto(1L, null, "Descripción válida");
 
@@ -88,7 +83,6 @@ class CategoryDtoTest {
     }
 
     @Test
-    @DisplayName("name está vacío")
     void validationFails_WhenNameIsEmpty() {
         CategoryDto dto = new CategoryDto(1L, "", "Descripción válida");
 
@@ -103,7 +97,6 @@ class CategoryDtoTest {
     }
 
     @Test
-    @DisplayName("name solo contiene espacios en blanco")
     void validationFails_WhenNameIsOnlyWhitespace() {
         CategoryDto dto = new CategoryDto(1L, "     ", "Descripción válida");
 
@@ -118,7 +111,6 @@ class CategoryDtoTest {
     }
 
     @Test
-    @DisplayName("name solo contiene tabulaciones")
     void validationFails_WhenNameIsOnlyTabs() {
         CategoryDto dto = new CategoryDto(1L, "\t\t\t", "Descripción válida");
 
@@ -129,7 +121,6 @@ class CategoryDtoTest {
     }
 
     @Test
-    @DisplayName("name solo contiene saltos de línea")
     void validationFails_WhenNameIsOnlyNewLines() {
         CategoryDto dto = new CategoryDto(1L, "\n\n", "Descripción válida");
 
@@ -141,7 +132,6 @@ class CategoryDtoTest {
 
 
     @Test
-    @DisplayName("name excede 100 caracteres")
     void validationFails_WhenNameExceeds100Characters() {
         String name = "A".repeat(101);
         CategoryDto dto = new CategoryDto(1L, name, "Descripción");
@@ -153,7 +143,6 @@ class CategoryDtoTest {
             }
 
     @Test
-    @DisplayName("name con 1 carácter")
     void validationPasses_WhenNameIs1Character() {
         CategoryDto dto = new CategoryDto(1L, "A", "Descripción");
 
@@ -163,7 +152,6 @@ class CategoryDtoTest {
     }
 
     @Test
-    @DisplayName("name con 50 caracteres")
     void validationPasses_WhenNameIs50Characters() {
         String name = "A".repeat(50);
         CategoryDto dto = new CategoryDto(1L, name, "Descripción");
@@ -175,7 +163,6 @@ class CategoryDtoTest {
 
 
     @Test
-    @DisplayName("description excede 500 caracteres")
     void validationFails_WhenDescriptionExceeds500Characters() {
         String description = "B".repeat(501);
         CategoryDto dto = new CategoryDto(1L, "Nombre válido", description);
@@ -192,7 +179,6 @@ class CategoryDtoTest {
 
 
     @Test
-    @DisplayName("name y description inválidos simultáneamente")
     void validationFails_WithMultipleViolations() {
         String longName = "A".repeat(101);
         String longDescription = "B".repeat(501);

@@ -1,6 +1,7 @@
 package org.example.storeback.domain.service.impl;
 
 import org.example.storeback.domain.mappers.ClientMapper;
+import org.example.storeback.domain.models.Role;
 import org.example.storeback.domain.repository.ClientRepository;
 import org.example.storeback.domain.repository.SessionRepository;
 import org.example.storeback.domain.repository.entity.SessionEntity;
@@ -42,7 +43,17 @@ public class AuthServiceImpl implements AuthService {
         return sessionRepository.findByToken(token)
                 .flatMap(session -> clientRepository.findById(session.clientId()))
                 .map(ClientMapper.getInstance()::fromClientEntityToClient)
+                .map(ClientMapper.getInstance()::fromClientToClientDto)
+                .filter(clientDto -> clientDto.role() == Role.ADMIN); // Solo devuelve si es ADMIN
+    }
+
+    @Override
+    public Optional<ClientDto> getAnyUserFromToken(String token) {
+        return sessionRepository.findByToken(token)
+                .flatMap(session -> clientRepository.findById(session.clientId()))
+                .map(ClientMapper.getInstance()::fromClientEntityToClient)
                 .map(ClientMapper.getInstance()::fromClientToClientDto);
+
     }
 
     @Override
@@ -50,4 +61,3 @@ public class AuthServiceImpl implements AuthService {
         sessionRepository.deleteByToken(token);
     }
 }
-

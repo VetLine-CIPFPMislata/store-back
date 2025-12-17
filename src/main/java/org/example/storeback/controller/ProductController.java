@@ -27,8 +27,28 @@ public class ProductController {
         this.productService = productService;
     }
 
+    @RequiresRole(Role.ADMIN)
     @GetMapping
     public ResponseEntity<Page<ProductResponse>> getAllProducts(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+
+        Page<ProductDto> products = productService.findAll(page, size);
+        List<ProductResponse> responses = products.data().stream()
+                .map(ProductMapperPresentation.getInstance()::fromDtoToResponse)
+                .toList();
+        Page<ProductResponse> responsePage = new Page<>(
+                responses,
+                products.pageNumber(),
+                products.pageSize(),
+                products.totalElements()
+        );
+        return ResponseEntity.ok(responsePage);
+    }
+
+    @GetMapping("/public")
+    public ResponseEntity<Page<ProductResponse>> getAllProductsPublic(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size
     ) {

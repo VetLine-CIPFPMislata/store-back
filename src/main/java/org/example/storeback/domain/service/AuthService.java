@@ -7,6 +7,6 @@ import java.util.Optional;
 public interface AuthService {
     String createTokenFromUser(ClientDto clientDto);
     Optional<ClientDto> getUserFromToken(String token);
+    Optional<ClientDto> getAnyUserFromToken(String token);
     void deleteToken(String token);
 }
-

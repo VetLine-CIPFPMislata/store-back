@@ -2,9 +2,11 @@ package org.example.storeback.persistence.dao;
 
 import org.example.storeback.domain.repository.entity.ClientEntity;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ClientJpaDao {
+    List<ClientEntity> findAll();
     Optional<ClientEntity> findById(Long id);
     Optional<ClientEntity> findByEmail(String email);
     ClientEntity save(ClientEntity clientEntity);

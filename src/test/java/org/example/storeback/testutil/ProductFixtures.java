@@ -79,7 +79,6 @@ public class ProductFixtures {
     }
 
     public static ProductInsertRequest sampleInsertRequest() {
-        // ProductInsertRequest(String name, String productDescription, Category category, String pictureProduct, int quantity, BigDecimal basePrice, BigDecimal discountPercentage)
         return new ProductInsertRequest(
                 "Product 1",
                 "Desc",
@@ -92,7 +91,6 @@ public class ProductFixtures {
     }
 
     public static ProductUpdateRequest sampleUpdateRequest() {
-        // ProductUpdateRequest(Long id, String name, String productDescription, Category category, String pictureProduct, int quantity, BigDecimal basePrice, BigDecimal discountPercentage)
         return new ProductUpdateRequest(
                 1L,
                 "Product 1",

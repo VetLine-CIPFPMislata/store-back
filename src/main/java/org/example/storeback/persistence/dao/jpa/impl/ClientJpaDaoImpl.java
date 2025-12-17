@@ -9,13 +9,26 @@ import org.example.storeback.persistence.dao.ClientJpaDao;
 import org.example.storeback.persistence.dao.jpa.entity.ClientJpaEntity;
 import org.example.storeback.persistence.repository.mapper.ClientMapperPersistence;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Transactional
 public class ClientJpaDaoImpl implements ClientJpaDao {
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    @Override
+    public List<ClientEntity> findAll() {
+        TypedQuery<ClientJpaEntity> query = entityManager.createQuery(
+                "SELECT c FROM ClientJpaEntity c",
+                ClientJpaEntity.class
+        );
+        return query.getResultList().stream()
+                .map(ClientMapperPersistence.getInstance()::fromClientJpaEntityToClientEntity)
+                .collect(Collectors.toList());
+    }
 
     @Override
     public Optional<ClientEntity> findById(Long id) {
