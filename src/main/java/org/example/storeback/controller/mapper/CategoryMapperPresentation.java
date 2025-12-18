@@ -22,7 +22,8 @@ public class CategoryMapperPresentation {
         }
         return new CategoryResponse(
                 categoryDto.id(),
-                categoryDto.name()
+                categoryDto.name(),
+                categoryDto.description()
         );
     }
     public static CategoryDto fromCategoryInsertToCategoryDto(CategoryInsertRequest categoryInsert){

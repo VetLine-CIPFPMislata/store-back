@@ -32,7 +32,7 @@ public class CategoryController {
 
         List<CategoryDto> categories = categoryService.findAll();
         List<CategoryResponse> categoryResponses = categories.stream()
-                .map(categoryDto -> new CategoryResponse(categoryDto.id(), categoryDto.name()))
+                .map(categoryDto -> new CategoryResponse(categoryDto.id(), categoryDto.name(), categoryDto.description()))
                 .toList();
         return ResponseEntity.ok(categoryResponses);
     }
@@ -42,7 +42,7 @@ public class CategoryController {
 
         List<CategoryDto> categories = categoryService.findAll();
         List<CategoryResponse> categoryResponses = categories.stream()
-                .map(categoryDto -> new CategoryResponse(categoryDto.id(), categoryDto.name()))
+                .map(categoryDto -> new CategoryResponse(categoryDto.id(), categoryDto.name(), categoryDto.description()))
                 .toList();
         return ResponseEntity.ok(categoryResponses);
     }
@@ -50,14 +50,14 @@ public class CategoryController {
     public ResponseEntity<CategoryResponse> findCategoryById(@PathVariable Long id) {
         Optional<CategoryDto> categoryDtoOptional = categoryService.findById(id);
         return categoryDtoOptional
-                .map(categoryDto -> ResponseEntity.ok(new CategoryResponse(categoryDto.id(), categoryDto.name())))
+                .map(categoryDto -> ResponseEntity.ok(new CategoryResponse(categoryDto.id(), categoryDto.name(), categoryDto.description())))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
     @GetMapping("/search/{name}")
     public ResponseEntity<CategoryResponse> findCategoryByName(@PathVariable String name) {
         Optional<CategoryDto> categoryDtoOptional = categoryService.findByName(name);
         return categoryDtoOptional
-                .map(categoryDto -> ResponseEntity.ok(new CategoryResponse(categoryDto.id(), categoryDto.name())))
+                .map(categoryDto -> ResponseEntity.ok(new CategoryResponse(categoryDto.id(), categoryDto.name(), categoryDto.description())))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
     @RequiresRole(Role.ADMIN)
@@ -100,4 +100,5 @@ public class CategoryController {
         categoryService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+
 }
