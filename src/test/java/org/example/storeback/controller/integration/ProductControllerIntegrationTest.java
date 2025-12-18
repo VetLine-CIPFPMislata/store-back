@@ -42,17 +42,7 @@ public class ProductControllerIntegrationTest {
 
     private String adminToken = "admin-token";
     private ClientDto adminUser;
-
-    // Helper: obtiene o crea la categoría 'Cat1' y devuelve su entidad con id real
-    private CategoryEntity getOrCreateCat1() {
-        return categoryRepository.findByName(ProductFixtures.sampleCategory().getName())
-                .orElseGet(() -> {
-                    CategoryEntity cat = new CategoryEntity(null,
-                            ProductFixtures.sampleCategory().getName(),
-                            ProductFixtures.sampleCategory().getDescription());
-                    return categoryRepository.save(cat);
-                });
-    }
+    private CategoryEntity category;
 
     @BeforeEach
     void setUp() {
@@ -65,12 +55,12 @@ public class ProductControllerIntegrationTest {
             return Optional.empty();
         });
 
-        // Ensure a category exists for products created by fixtures
-        // Only create if it doesn't exist to avoid unique constraint violations
-        if (categoryRepository.findByName(ProductFixtures.sampleCategory().getName()).isEmpty()) {
-            CategoryEntity cat = new CategoryEntity(null, ProductFixtures.sampleCategory().getName(), ProductFixtures.sampleCategory().getDescription());
-            categoryRepository.save(cat);
-        }
+        // Prepara una única categoría reutilizable para todos los tests
+        category = categoryRepository.findByName(ProductFixtures.sampleCategory().getName())
+                .orElseGet(() -> categoryRepository.save(new CategoryEntity(
+                        null,
+                        ProductFixtures.sampleCategory().getName(),
+                        ProductFixtures.sampleCategory().getDescription())));
     }
 
     private HttpHeaders adminHeaders() {
@@ -82,9 +72,7 @@ public class ProductControllerIntegrationTest {
 
     @Test
     void createAndGetAndDeleteProduct_flow() {
-        // Crear categoría y usar su id real en el request
-        CategoryEntity cat = getOrCreateCat1();
-        Category categoryDomain = new Category(cat.id(), cat.name(), cat.description());
+        Category categoryDomain = new Category(category.id(), category.name(), category.description());
         ProductInsertRequest insert = new ProductInsertRequest(
                 "Product 1",
                 "Desc",
@@ -103,7 +91,6 @@ public class ProductControllerIntegrationTest {
 
         Long id = created.id();
 
-        // Get by id
         ResponseEntity<ProductResponse> getResp = restTemplate.getForEntity("/api/products/" + id, ProductResponse.class);
         assertThat(getResp.getStatusCode()).isEqualTo(HttpStatus.OK);
         ProductResponse fetched = getResp.getBody();
@@ -111,7 +98,6 @@ public class ProductControllerIntegrationTest {
         assertThat(fetched.id()).isEqualTo(id);
         assertThat(fetched.name()).isEqualTo(insert.name());
 
-        // Update (mantener la misma categoría real)
         ProductUpdateRequest update = new ProductUpdateRequest(id, "Updated name", "Desc", categoryDomain, insert.pictureProduct(), insert.quantity(), insert.basePrice(), insert.discountPercentage());
         HttpEntity<ProductUpdateRequest> updateReq = new HttpEntity<>(update, adminHeaders());
         ResponseEntity<ProductResponse> updateResp = restTemplate.exchange("/api/products/" + id, HttpMethod.PUT, updateReq, ProductResponse.class);
@@ -120,21 +106,18 @@ public class ProductControllerIntegrationTest {
         assertThat(updated).isNotNull();
         assertThat(updated.name()).isEqualTo("Updated name");
 
-        // Delete
         HttpEntity<Void> deleteReq = new HttpEntity<>(adminHeaders());
         ResponseEntity<Void> deleteResp = restTemplate.exchange("/api/products/" + id, HttpMethod.DELETE, deleteReq, Void.class);
         assertThat(deleteResp.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 
-        // Get after delete -> 404
         ResponseEntity<ProductResponse> afterDelete = restTemplate.getForEntity("/api/products/" + id, ProductResponse.class);
         assertThat(afterDelete.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
     @Test
     void getAllProducts_returnsPaged() {
-        // Crear categoría y usar su id real en el request del producto
-        CategoryEntity cat = getOrCreateCat1();
-        Category categoryDomain = new Category(cat.id(), cat.name(), cat.description());
+
+        Category categoryDomain = new Category(category.id(), category.name(), category.description());
         ProductInsertRequest insert = new ProductInsertRequest(
                 "Product 1",
                 "Desc",
@@ -147,7 +130,8 @@ public class ProductControllerIntegrationTest {
         HttpEntity<ProductInsertRequest> req = new HttpEntity<>(insert, adminHeaders());
         restTemplate.postForEntity("/api/products", req, ProductResponse.class);
 
-        ResponseEntity<String> resp = restTemplate.getForEntity("/api/products", String.class);
+        HttpEntity<Void> getReq = new HttpEntity<>(adminHeaders());
+        ResponseEntity<String> resp = restTemplate.exchange("/api/products", HttpMethod.GET, getReq, String.class);
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(resp.getBody()).contains("\"pageNumber\"", "\"data\"");
     }

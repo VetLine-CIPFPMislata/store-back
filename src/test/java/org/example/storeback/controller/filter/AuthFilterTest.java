@@ -69,41 +69,35 @@ class AuthFilterTest {
     @Test
     @DisplayName("Debe permitir acceso a /api/auth/login sin autenticación")
     void doFilterInternal_WithLoginEndpoint_ShouldAllowAccess() throws ServletException, IOException {
-        // Given
+
         when(request.getRequestURI()).thenReturn("/api/auth/login");
 
-        // When
         authFilter.doFilterInternal(request, response, filterChain);
 
-        // Then
-        verify(filterChain, times(1)).doFilter(request, response);
-        verify(authService, never()).getUserFromToken(anyString());
-        verify(response, never()).setStatus(anyInt());
+        verify(filterChain).doFilter(request, response);
+        verify(authService,never()).getUserFromToken(anyString());
+        verify(response,never()).setStatus(anyInt());
     }
 
     @Test
     @DisplayName("Debe permitir acceso a endpoint sin @RequiresRole")
     void doFilterInternal_WithoutRequiresRole_ShouldAllowAccess() throws Exception {
-        // Given
         when(request.getRequestURI()).thenReturn("/api/products");
         when(handlerMapping.getHandler(request)).thenReturn(
             new org.springframework.web.servlet.HandlerExecutionChain(handlerMethod)
         );
         when(handlerMethod.getMethodAnnotation(RequiresRole.class)).thenReturn(null);
 
-        // When
         authFilter.doFilterInternal(request, response, filterChain);
 
-        // Then
-        verify(filterChain, times(1)).doFilter(request, response);
-        verify(authService, never()).getUserFromToken(anyString());
-        verify(response, never()).setStatus(anyInt());
+        verify(filterChain).doFilter(request, response);
+        verify(authService,never()).getUserFromToken(anyString());
+        verify(response,never()).setStatus(anyInt());
     }
 
     @Test
     @DisplayName("Debe denegar acceso cuando falta el header Authorization en endpoint protegido")
     void doFilterInternal_WithRequiresRoleButNoAuthHeader_ShouldReturn401() throws Exception {
-        // Given
         when(request.getRequestURI()).thenReturn("/api/products");
         when(request.getHeader("Authorization")).thenReturn(null);
 
@@ -115,11 +109,9 @@ class AuthFilterTest {
         );
         when(handlerMethod.getMethodAnnotation(RequiresRole.class)).thenReturn(requiresRole);
 
-        // When
         authFilter.doFilterInternal(request, response, filterChain);
 
-        // Then
-        verify(response, times(1)).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        verify(response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         verify(filterChain, never()).doFilter(request, response);
         verify(authService, never()).getUserFromToken(anyString());
     }
@@ -127,7 +119,6 @@ class AuthFilterTest {
     @Test
     @DisplayName("Debe denegar acceso cuando el header Authorization no tiene formato Bearer")
     void doFilterInternal_WithInvalidAuthHeaderFormat_ShouldReturn401() throws Exception {
-        // Given
         when(request.getRequestURI()).thenReturn("/api/products");
         when(request.getHeader("Authorization")).thenReturn("InvalidFormat token");
 
@@ -139,11 +130,9 @@ class AuthFilterTest {
         );
         when(handlerMethod.getMethodAnnotation(RequiresRole.class)).thenReturn(requiresRole);
 
-        // When
         authFilter.doFilterInternal(request, response, filterChain);
 
-        // Then
-        verify(response, times(1)).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        verify(response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         verify(filterChain, never()).doFilter(request, response);
         verify(authService, never()).getUserFromToken(anyString());
     }
@@ -151,7 +140,6 @@ class AuthFilterTest {
     @Test
     @DisplayName("Debe denegar acceso cuando el token es inválido")
     void doFilterInternal_WithInvalidToken_ShouldReturn401() throws Exception {
-        // Given
         when(request.getRequestURI()).thenReturn("/api/products");
         when(request.getHeader("Authorization")).thenReturn("Bearer invalid-token");
         when(authService.getUserFromToken("invalid-token")).thenReturn(Optional.empty());
@@ -164,19 +152,16 @@ class AuthFilterTest {
         );
         when(handlerMethod.getMethodAnnotation(RequiresRole.class)).thenReturn(requiresRole);
 
-        // When
         authFilter.doFilterInternal(request, response, filterChain);
 
-        // Then
-        verify(response, times(1)).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        verify(response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         verify(filterChain, never()).doFilter(request, response);
-        verify(authService, times(1)).getUserFromToken("invalid-token");
+        verify(authService).getUserFromToken("invalid-token");
     }
 
     @Test
     @DisplayName("Debe denegar acceso cuando el usuario no tiene el rol requerido")
     void doFilterInternal_WithInsufficientRole_ShouldReturn403() throws Exception {
-        // Given
         when(request.getRequestURI()).thenReturn("/api/products");
         when(request.getHeader("Authorization")).thenReturn("Bearer " + AuthFixtures.USER_TOKEN);
         when(authService.getUserFromToken(AuthFixtures.USER_TOKEN)).thenReturn(Optional.of(userClient));
@@ -188,20 +173,16 @@ class AuthFilterTest {
             new org.springframework.web.servlet.HandlerExecutionChain(handlerMethod)
         );
         when(handlerMethod.getMethodAnnotation(RequiresRole.class)).thenReturn(requiresRole);
-
-        // When
         authFilter.doFilterInternal(request, response, filterChain);
 
-        // Then
-        verify(response, times(1)).setStatus(HttpServletResponse.SC_FORBIDDEN);
+        verify(response).setStatus(HttpServletResponse.SC_FORBIDDEN);
         verify(filterChain, never()).doFilter(request, response);
-        verify(authService, times(1)).getUserFromToken(AuthFixtures.USER_TOKEN);
+        verify(authService).getUserFromToken(AuthFixtures.USER_TOKEN);
     }
 
     @Test
     @DisplayName("Debe permitir acceso cuando el usuario tiene el rol requerido ADMIN")
     void doFilterInternal_WithAdminRole_ShouldAllowAccess() throws Exception {
-        // Given
         when(request.getRequestURI()).thenReturn("/api/products");
         when(request.getHeader("Authorization")).thenReturn("Bearer " + AuthFixtures.ADMIN_TOKEN);
         when(authService.getUserFromToken(AuthFixtures.ADMIN_TOKEN)).thenReturn(Optional.of(adminClient));
@@ -214,19 +195,16 @@ class AuthFilterTest {
         );
         when(handlerMethod.getMethodAnnotation(RequiresRole.class)).thenReturn(requiresRole);
 
-        // When
         authFilter.doFilterInternal(request, response, filterChain);
 
-        // Then
-        verify(filterChain, times(1)).doFilter(request, response);
+        verify(filterChain).doFilter(request, response);
         verify(response, never()).setStatus(anyInt());
-        verify(authService, times(1)).getUserFromToken(AuthFixtures.ADMIN_TOKEN);
+        verify(authService).getUserFromToken(AuthFixtures.ADMIN_TOKEN);
     }
 
     @Test
     @DisplayName("Debe permitir acceso cuando el usuario tiene el rol requerido USER")
     void doFilterInternal_WithUserRole_ShouldAllowAccess() throws Exception {
-        // Given
         when(request.getRequestURI()).thenReturn("/api/orders");
         when(request.getHeader("Authorization")).thenReturn("Bearer " + AuthFixtures.USER_TOKEN);
         when(authService.getUserFromToken(AuthFixtures.USER_TOKEN)).thenReturn(Optional.of(userClient));
@@ -239,19 +217,16 @@ class AuthFilterTest {
         );
         when(handlerMethod.getMethodAnnotation(RequiresRole.class)).thenReturn(requiresRole);
 
-        // When
         authFilter.doFilterInternal(request, response, filterChain);
 
-        // Then
-        verify(filterChain, times(1)).doFilter(request, response);
+        verify(filterChain).doFilter(request, response);
         verify(response, never()).setStatus(anyInt());
-        verify(authService, times(1)).getUserFromToken(AuthFixtures.USER_TOKEN);
+        verify(authService).getUserFromToken(AuthFixtures.USER_TOKEN);
     }
 
     @Test
     @DisplayName("Debe extraer correctamente el token del header Authorization")
     void doFilterInternal_ShouldExtractTokenCorrectly() throws Exception {
-        // Given
         String customToken = "my-custom-token-xyz";
         when(request.getRequestURI()).thenReturn("/api/products");
         when(request.getHeader("Authorization")).thenReturn("Bearer " + customToken);
@@ -265,12 +240,10 @@ class AuthFilterTest {
         );
         when(handlerMethod.getMethodAnnotation(RequiresRole.class)).thenReturn(requiresRole);
 
-        // When
         authFilter.doFilterInternal(request, response, filterChain);
 
-        // Then
-        verify(authService, times(1)).getUserFromToken(customToken);
-        verify(filterChain, times(1)).doFilter(request, response);
+        verify(authService).getUserFromToken(customToken);
+        verify(filterChain).doFilter(request, response);
     }
 
     @Test
@@ -294,7 +267,7 @@ class AuthFilterTest {
         authFilter.doFilterInternal(request, response, filterChain);
 
         // Then - El token con espacios no se encuentra, así que debe retornar 401
-        verify(response, times(1)).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        verify(response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         verify(filterChain, never()).doFilter(request, response);
     }
 
@@ -318,9 +291,9 @@ class AuthFilterTest {
         authFilter.doFilterInternal(request, response, filterChain);
 
         // Then
-        verify(response, times(1)).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        verify(response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         verify(filterChain, never()).doFilter(request, response);
-        verify(authService, times(1)).getUserFromToken(""); // SÍ se llama con cadena vacía
+        verify(authService).getUserFromToken(""); // SÍ se llama con cadena vacía
     }
 
     @Test
@@ -334,7 +307,7 @@ class AuthFilterTest {
         authFilter.doFilterInternal(request, response, filterChain);
 
         // Then - El filtro captura la excepción y retorna 500
-        verify(response, times(1)).setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        verify(response).setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         verify(filterChain, never()).doFilter(request, response);
         verify(authService, never()).getUserFromToken(anyString());
     }
@@ -357,8 +330,8 @@ class AuthFilterTest {
 
         authFilter.doFilterInternal(request, response, filterChain);
 
-        verify(authService, times(1)).getUserFromToken(AuthFixtures.ADMIN_TOKEN);
-        verify(filterChain, times(1)).doFilter(request, response);
+        verify(authService).getUserFromToken(AuthFixtures.ADMIN_TOKEN);
+        verify(filterChain).doFilter(request, response);
         verify(response, never()).setStatus(anyInt());
     }
 
@@ -380,8 +353,8 @@ class AuthFilterTest {
 
         authFilter.doFilterInternal(request, response, filterChain);
 
-        verify(authService, times(1)).getUserFromToken(AuthFixtures.USER_TOKEN);
-        verify(response, times(1)).setStatus(HttpServletResponse.SC_FORBIDDEN);
+        verify(authService).getUserFromToken(AuthFixtures.USER_TOKEN);
+        verify(response).setStatus(HttpServletResponse.SC_FORBIDDEN);
         verify(filterChain, never()).doFilter(request, response);
     }
 
@@ -404,7 +377,7 @@ class AuthFilterTest {
         authFilter.doFilterInternal(request, response, filterChain);
 
         // Then - Debe fallar porque 'Bearer' es case-sensitive
-        verify(response, times(1)).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        verify(response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         verify(authService, never()).getUserFromToken(anyString());
         verify(filterChain, never()).doFilter(request, response);
     }
