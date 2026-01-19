@@ -73,7 +73,6 @@ public class AuthController {
         if (token == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
-
         Optional<ClientDto> userOptional = authService.getUserFromToken(token);
 
         if (userOptional.isEmpty()) {
