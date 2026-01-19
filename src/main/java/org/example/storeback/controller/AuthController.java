@@ -1,6 +1,7 @@
 package org.example.storeback.controller;
 
 import org.example.storeback.controller.webmodel.request.LoginRequest;
+import org.example.storeback.controller.webmodel.request.RegisterRequest;
 import org.example.storeback.controller.webmodel.response.ClientResponse;
 import org.example.storeback.controller.webmodel.response.LoginResponse;
 import org.example.storeback.domain.models.Role;
@@ -27,6 +28,39 @@ public class AuthController {
         this.authService = authService;
     }
 
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest registerRequest) {
+        if (clientService.existsByEmail(registerRequest.email())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("{\"error\": \"El email ya está registrado\"}");
+        }
+
+        ClientDto newClient = new ClientDto(
+                null,
+                registerRequest.name(),
+                registerRequest.email(),
+                registerRequest.password(),
+                registerRequest.phone(),
+                null,
+                Role.USER
+        );
+
+
+        ClientDto savedClient = clientService.save(newClient);
+
+
+        String token = authService.createTokenFromUser(savedClient);
+
+
+        LoginResponse response = new LoginResponse(
+                token,
+                savedClient.email(),
+                savedClient.name(),
+                savedClient.role()
+        );
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) {

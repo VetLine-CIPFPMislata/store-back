@@ -32,7 +32,8 @@ public class AuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        if (request.getRequestURI().equals("/api/auth/login")) {
+        if (request.getRequestURI().equals("/api/auth/login") ||
+            request.getRequestURI().equals("/api/auth/register")) {
             filterChain.doFilter(request, response);
             return;
         }
