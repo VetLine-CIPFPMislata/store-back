@@ -13,6 +13,7 @@ public record ProductResponse(
         int quantity,
         BigDecimal basePrice,
         BigDecimal discountPercentage,
-        BigDecimal price
+        BigDecimal price,
+        Integer rating
 ) {
 }

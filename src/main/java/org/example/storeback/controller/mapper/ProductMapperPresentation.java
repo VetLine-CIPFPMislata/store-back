@@ -57,7 +57,8 @@ public class ProductMapperPresentation {
                 dto.quantity(),
                 dto.basePrice(),
                 dto.discountPercentage(),
-                dto.price()
+                dto.price(),
+                dto.rating()
         );
     }
 }
