@@ -57,7 +57,9 @@ public class SpringConfig {
     @Bean
     public CategoryRepository categoryRepository(CategoryJpaDao categoryJpaDao){return new CategoryRepositoryImpl(categoryJpaDao);}
     @Bean
-    public CategoryService categoryService(CategoryRepository categoryRepository){return new CategoryServiceImpl(categoryRepository);}
+    public CategoryService categoryService(CategoryRepository categoryRepository, ProductRepository productRepository){
+        return new CategoryServiceImpl(categoryRepository, productRepository);
+    }
     @Bean
     public CategoryJpaDao categoryJpaDao(){return new CategoryJpaDaoImpl();}
 

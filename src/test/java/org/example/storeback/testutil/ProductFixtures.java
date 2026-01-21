@@ -114,7 +114,8 @@ public class ProductFixtures {
                 dto.quantity(),
                 dto.basePrice(),
                 dto.discountPercentage(),
-                dto.price()
+                dto.price(),
+                dto.rating()
         );
     }
 

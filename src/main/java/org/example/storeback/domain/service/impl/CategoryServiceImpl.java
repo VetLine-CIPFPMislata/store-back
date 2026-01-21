@@ -1,5 +1,6 @@
 package org.example.storeback.domain.service.impl;
 
+import org.example.storeback.domain.exception.BusinessException;
 import org.example.storeback.domain.mappers.CategoryMapper;
 import org.example.storeback.domain.repository.CategoryRepository;
 import org.example.storeback.domain.repository.ProductRepository;
@@ -12,9 +13,11 @@ import java.util.Optional;
 
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
+    private final ProductRepository productRepository;
 
-    public CategoryServiceImpl(CategoryRepository categoryRepository) {
+    public CategoryServiceImpl(CategoryRepository categoryRepository, ProductRepository productRepository) {
         this.categoryRepository = categoryRepository;
+        this.productRepository = productRepository;
     }
 
     @Override
@@ -74,6 +77,18 @@ public class CategoryServiceImpl implements CategoryService {
         if (categoryRepository.findById(id).isEmpty()) {
             throw new IllegalArgumentException("Category with id " + id + " not found");
         }
+
+        Optional<CategoryEntity> categoryEntity = categoryRepository.findById(id);
+        if (categoryEntity.isPresent()) {
+            String categoryName = categoryEntity.get().name();
+            List<?> productsInCategory = productRepository.findByCategory(categoryName);
+
+            if (!productsInCategory.isEmpty()) {
+                throw new BusinessException("Cannot delete category with id " + id + " because it has " +
+                        productsInCategory.size() + " product(s) assigned to it");
+            }
+        }
+
         categoryRepository.deleteById(id);
     }
 }

@@ -3,6 +3,7 @@ package org.example.storeback.controller;
 import org.example.storeback.controller.webmodel.request.CategoryInsertRequest;
 import org.example.storeback.controller.webmodel.request.CategoryUpdateRequest;
 import org.example.storeback.controller.webmodel.response.CategoryResponse;
+import org.example.storeback.domain.exception.BusinessException;
 import org.example.storeback.domain.models.Role;
 import org.example.storeback.domain.service.CategoryService;
 import org.example.storeback.domain.service.dto.CategoryDto;
@@ -97,8 +98,12 @@ public class CategoryController {
     @RequiresRole(Role.ADMIN)
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
-        categoryService.deleteById(id);
-        return ResponseEntity.noContent().build();
+        try {
+            categoryService.deleteById(id);
+            return ResponseEntity.noContent().build();
+        } catch (BusinessException ex) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
     }
 
 }

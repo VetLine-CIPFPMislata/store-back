@@ -1,8 +1,11 @@
 package org.example.storeback.domain.service.impl;
 
+import org.example.storeback.domain.exception.BusinessException;
 import org.example.storeback.domain.models.Category;
 import org.example.storeback.domain.repository.CategoryRepository;
+import org.example.storeback.domain.repository.ProductRepository;
 import org.example.storeback.domain.repository.entity.CategoryEntity;
+import org.example.storeback.domain.repository.entity.ProductEntity;
 import org.example.storeback.domain.service.dto.CategoryDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -26,6 +29,9 @@ class CategoryServiceImplTest {
 
     @Mock
     private CategoryRepository categoryRepository;
+
+    @Mock
+    private ProductRepository productRepository;
 
     @InjectMocks
     private CategoryServiceImpl categoryService;
@@ -156,11 +162,13 @@ class CategoryServiceImplTest {
     void deleteById_ShouldDeleteCategory_WhenCategoryExists() {
         Long categoryId = 1L;
         when(categoryRepository.findById(categoryId)).thenReturn(Optional.of(categoryEntity1));
+        when(productRepository.findByCategory("Comida")).thenReturn(List.of());
         doNothing().when(categoryRepository).deleteById(categoryId);
 
         categoryService.deleteById(categoryId);
 
-        verify(categoryRepository).findById(categoryId);
+        verify(categoryRepository, times(2)).findById(categoryId);
+        verify(productRepository).findByCategory("Comida");
         verify(categoryRepository).deleteById(categoryId);
     }
 
@@ -183,13 +191,51 @@ class CategoryServiceImplTest {
     void deleteById_ShouldHandleDeletionWithPriorVerification() {
         Long categoryId = 2L;
         when(categoryRepository.findById(categoryId)).thenReturn(Optional.of(categoryEntity2));
+        when(productRepository.findByCategory("Juguetes")).thenReturn(List.of());
         doNothing().when(categoryRepository).deleteById(categoryId);
 
         assertDoesNotThrow(() -> categoryService.deleteById(categoryId));
 
-        verify(categoryRepository).findById(categoryId);
+        verify(categoryRepository, times(2)).findById(categoryId);
+        verify(productRepository).findByCategory("Juguetes");
+        verify(categoryRepository).deleteById(categoryId);
+    }
+
+    @Test
+    @DisplayName("deleteById - Should throw BusinessException when category has assigned products")
+    void deleteById_ShouldThrowBusinessException_WhenCategoryHasProducts() {
+        Long categoryId = 1L;
+        when(categoryRepository.findById(categoryId)).thenReturn(Optional.of(categoryEntity1));
+
+        ProductEntity product1 = mock(ProductEntity.class);
+        ProductEntity product2 = mock(ProductEntity.class);
+        when(productRepository.findByCategory("Comida")).thenReturn(Arrays.asList(product1, product2));
+
+        BusinessException exception = assertThrows(
+            BusinessException.class,
+            () -> categoryService.deleteById(categoryId)
+        );
+
+        assertTrue(exception.getMessage().contains("Cannot delete category with id " + categoryId));
+        assertTrue(exception.getMessage().contains("2 product(s) assigned"));
+        verify(categoryRepository, times(2)).findById(categoryId);
+        verify(productRepository).findByCategory("Comida");
+        verify(categoryRepository, never()).deleteById(categoryId);
+    }
+
+    @Test
+    @DisplayName("deleteById - Should delete category when no products assigned")
+    void deleteById_ShouldSucceed_WhenCategoryHasNoProducts() {
+        Long categoryId = 1L;
+        when(categoryRepository.findById(categoryId)).thenReturn(Optional.of(categoryEntity1));
+        when(productRepository.findByCategory("Comida")).thenReturn(List.of());
+        doNothing().when(categoryRepository).deleteById(categoryId);
+
+        assertDoesNotThrow(() -> categoryService.deleteById(categoryId));
+
+        verify(categoryRepository, times(2)).findById(categoryId);
+        verify(productRepository).findByCategory("Comida");
         verify(categoryRepository).deleteById(categoryId);
     }
 
 }
-
