@@ -8,6 +8,7 @@ import org.example.storeback.domain.models.Role;
 import org.example.storeback.domain.service.AuthService;
 import org.example.storeback.domain.service.dto.ClientDto;
 import org.example.storeback.domain.validation.RequiresRole;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.method.HandlerMethod;
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 @Component
+@Order(0)
 public class AuthFilter extends OncePerRequestFilter {
 
     private final AuthService authService;
