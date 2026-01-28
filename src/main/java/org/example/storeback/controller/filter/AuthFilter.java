@@ -38,6 +38,12 @@ public class AuthFilter extends OncePerRequestFilter {
             return;
         }
 
+        if("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            System.out.println("OPTIONS request - skipping auth filter");
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         try {
             HandlerExecutionChain handlerChain = handlerMapping.getHandler(request);
 
