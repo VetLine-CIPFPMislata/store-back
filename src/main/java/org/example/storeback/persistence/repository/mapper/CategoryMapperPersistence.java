@@ -5,14 +5,16 @@ import org.example.storeback.persistence.dao.jpa.entity.CategoryJpaEntity;
 
 public class CategoryMapperPersistence {
 
-    private static  CategoryMapperPersistence INSTANCE;
+    private static CategoryMapperPersistence INSTANCE;
+
+    private CategoryMapperPersistence() {
+    }
+
     public static CategoryMapperPersistence getInstance() {
         if (INSTANCE == null) {
             INSTANCE = new CategoryMapperPersistence();
         }
-        return  INSTANCE;
-    }
-    public  CategoryMapperPersistence() {
+        return INSTANCE;
     }
 
     public CategoryEntity fromCategoryJpaEntityToCategoryEntity(CategoryJpaEntity categoryJpaEntity) {
@@ -26,7 +28,7 @@ public class CategoryMapperPersistence {
         );
     }
 
-    public  CategoryJpaEntity fromCategoryEntityToCategoryJpaEntity(CategoryEntity categoryEntity) {
+    public CategoryJpaEntity fromCategoryEntityToCategoryJpaEntity(CategoryEntity categoryEntity) {
         if (categoryEntity == null) {
             return null;
         }

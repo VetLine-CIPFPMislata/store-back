@@ -1,6 +1,5 @@
 package org.example.storeback.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.storeback.domain.models.Page;
 import org.example.storeback.domain.service.ProductService;
 import org.example.storeback.domain.service.AuthService;

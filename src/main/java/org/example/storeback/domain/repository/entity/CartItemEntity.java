@@ -1,4 +1,12 @@
 package org.example.storeback.domain.repository.entity;
 
-public record CartItemEntity() {
+import java.math.BigDecimal;
+
+public record CartItemEntity(
+        Long id,
+        Integer quantity,
+        Long cartId,
+        ProductEntity product,
+        BigDecimal unitPrice
+) {
 }

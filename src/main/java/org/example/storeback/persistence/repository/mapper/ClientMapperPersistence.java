@@ -5,15 +5,16 @@ import org.example.storeback.domain.repository.entity.ClientEntity;
 import org.example.storeback.persistence.dao.jpa.entity.ClientJpaEntity;
 
 public class ClientMapperPersistence {
-    private static  ClientMapperPersistence INSTANCE;
+    private static ClientMapperPersistence INSTANCE;
+
+    private ClientMapperPersistence() {
+    }
 
     public static ClientMapperPersistence getInstance() {
         if (INSTANCE == null) {
             INSTANCE = new ClientMapperPersistence();
         }
-        return  INSTANCE;
-    }
-    public  ClientMapperPersistence() {
+        return INSTANCE;
     }
 
     public ClientEntity fromClientJpaEntityToClientEntity(ClientJpaEntity clientJpaEntity) {
@@ -31,7 +32,7 @@ public class ClientMapperPersistence {
         );
     }
 
-    public  ClientJpaEntity fromClientEntityToClientJpaEntity(ClientEntity clientEntity) {
+    public ClientJpaEntity fromClientEntityToClientJpaEntity(ClientEntity clientEntity) {
         if (clientEntity == null) {
             return  null;
         }
@@ -41,7 +42,6 @@ public class ClientMapperPersistence {
                 clientEntity.email(),
                 clientEntity.password(),
                 clientEntity.phone(),
-                clientEntity.cartId(),
                 clientEntity.role()
         );
     }

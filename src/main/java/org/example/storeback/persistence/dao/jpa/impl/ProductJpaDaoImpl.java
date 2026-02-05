@@ -23,12 +23,10 @@ public class ProductJpaDaoImpl implements ProductJpaDao {
     @Override
     public Page<ProductJpaEntity> findAll(int page, int size) {
         TypedQuery<ProductJpaEntity> query = entityManager.createQuery(
-                "SELECT p FROM ProductJpaEntity p", ProductJpaEntity.class
-        );
+                "SELECT p FROM ProductJpaEntity p", ProductJpaEntity.class);
 
         long totalElements = entityManager.createQuery(
-                "SELECT COUNT(p) FROM ProductJpaEntity p", Long.class
-        ).getSingleResult();
+                "SELECT COUNT(p) FROM ProductJpaEntity p", Long.class).getSingleResult();
 
         query.setFirstResult((page - 1) * size);
         query.setMaxResults(size);
@@ -42,8 +40,7 @@ public class ProductJpaDaoImpl implements ProductJpaDao {
     public Optional<ProductJpaEntity> findByName(String name) {
         TypedQuery<ProductJpaEntity> query = entityManager.createQuery(
                 "SELECT p FROM ProductJpaEntity p WHERE p.name = :name",
-                ProductJpaEntity.class
-        );
+                ProductJpaEntity.class);
         query.setParameter("name", name);
 
         return query.getResultStream().findFirst();
@@ -53,8 +50,7 @@ public class ProductJpaDaoImpl implements ProductJpaDao {
     public List<ProductJpaEntity> findByCategory(String category) {
         TypedQuery<ProductJpaEntity> query = entityManager.createQuery(
                 "SELECT p FROM ProductJpaEntity p WHERE p.category.name = :category",
-                ProductJpaEntity.class
-        );
+                ProductJpaEntity.class);
         query.setParameter("category", category);
 
         return query.getResultList();
@@ -64,8 +60,7 @@ public class ProductJpaDaoImpl implements ProductJpaDao {
     public List<ProductEntity> findByRating(int min, int max) {
         TypedQuery<ProductJpaEntity> query = entityManager.createQuery(
                 "SELECT p FROM ProductJpaEntity p WHERE p.rating BETWEEN :min AND :max",
-                ProductJpaEntity.class
-        );
+                ProductJpaEntity.class);
         query.setParameter("min", min);
         query.setParameter("max", max);
 
