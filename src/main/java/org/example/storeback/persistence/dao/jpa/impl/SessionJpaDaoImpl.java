@@ -21,8 +21,7 @@ public class SessionJpaDaoImpl implements SessionJpaDao {
     public Optional<SessionEntity> findByToken(String token) {
         TypedQuery<SessionJpaEntity> query = entityManager.createQuery(
                 "SELECT s FROM SessionJpaEntity s WHERE s.token = :token",
-                SessionJpaEntity.class
-        );
+                SessionJpaEntity.class);
         query.setParameter("token", token);
 
         return query.getResultStream()
@@ -49,10 +48,9 @@ public class SessionJpaDaoImpl implements SessionJpaDao {
     public void deleteByToken(String token) {
         TypedQuery<SessionJpaEntity> query = entityManager.createQuery(
                 "SELECT s FROM SessionJpaEntity s WHERE s.token = :token",
-                SessionJpaEntity.class
-        );
+                SessionJpaEntity.class);
         query.setParameter("token", token);
-        
+
         query.getResultStream().findFirst().ifPresent(entityManager::remove);
     }
 }

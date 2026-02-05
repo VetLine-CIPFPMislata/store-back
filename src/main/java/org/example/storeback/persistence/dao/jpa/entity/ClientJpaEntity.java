@@ -21,27 +21,29 @@ public class ClientJpaEntity {
     @Column(nullable = false)
     private String password;
 
-    @Column
+    @Column(name = "phone")
     private String phone;
 
     @Column(name = "id_cart")
     private Long cartId;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false)
     private Role role;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_cart", referencedColumnName = "id_cart", insertable = false, updatable = false)
+    private CartJpaEntity cart;
 
     public ClientJpaEntity() {
     }
 
-    public ClientJpaEntity(Long id, String name, String email, String password,
-                           String phone, Long cartId, Role role) {
+    public ClientJpaEntity(Long id, String name, String email, String password, String phone, Role role) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
         this.phone = phone;
-        this.cartId = cartId;
         this.role = role;
     }
 
@@ -85,6 +87,14 @@ public class ClientJpaEntity {
         this.phone = phone;
     }
 
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
     public Long getCartId() {
         return cartId;
     }
@@ -93,11 +103,11 @@ public class ClientJpaEntity {
         this.cartId = cartId;
     }
 
-    public Role getRole() {
-        return role;
+    public CartJpaEntity getCart() {
+        return cart;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
+    public void setCart(CartJpaEntity cart) {
+        this.cart = cart;
     }
 }

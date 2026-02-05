@@ -1,4 +1,3 @@
-// java
 package org.example.storeback.persistence.dao.jpa.impl;
 
 import jakarta.persistence.EntityManager;
@@ -8,6 +7,7 @@ import org.example.storeback.domain.repository.entity.CategoryEntity;
 import org.example.storeback.persistence.dao.CategoryJpaDao;
 import org.example.storeback.persistence.dao.jpa.entity.CategoryJpaEntity;
 import org.example.storeback.persistence.repository.mapper.CategoryMapperPersistence;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,22 +19,21 @@ public class CategoryJpaDaoImpl implements CategoryJpaDao {
     @PersistenceContext
     private EntityManager entityManager;
 
-    private final CategoryMapperPersistence mapper = CategoryMapperPersistence.getInstance();
-
     @Override
     public List<CategoryEntity> findAll() {
         String jpql = "SELECT c FROM CategoryJpaEntity c";
         List<CategoryJpaEntity> jpaList = entityManager.createQuery(jpql, CategoryJpaEntity.class)
                 .getResultList();
         return jpaList.stream()
-                .map(mapper::fromCategoryJpaEntityToCategoryEntity)
+                .map(CategoryMapperPersistence.getInstance()::fromCategoryJpaEntityToCategoryEntity)
                 .collect(Collectors.toList());
     }
 
     @Override
     public Optional<CategoryEntity> findById(Long id) {
         CategoryJpaEntity jpa = entityManager.find(CategoryJpaEntity.class, id);
-        return Optional.ofNullable(mapper.fromCategoryJpaEntityToCategoryEntity(jpa));
+        return Optional.ofNullable(jpa)
+                .map(CategoryMapperPersistence.getInstance()::fromCategoryJpaEntityToCategoryEntity);
     }
 
     @Override
@@ -47,7 +46,8 @@ public class CategoryJpaDaoImpl implements CategoryJpaDao {
         if (result.isEmpty()) {
             return Optional.empty();
         }
-        return Optional.ofNullable(mapper.fromCategoryJpaEntityToCategoryEntity(result.get(0)));
+        return Optional.ofNullable(
+                CategoryMapperPersistence.getInstance().fromCategoryJpaEntityToCategoryEntity(result.get(0)));
     }
 
     @Override
@@ -55,16 +55,17 @@ public class CategoryJpaDaoImpl implements CategoryJpaDao {
         if (categoryEntity == null) {
             return null;
         }
-        CategoryJpaEntity jpa = mapper.fromCategoryEntityToCategoryJpaEntity(categoryEntity);
+        CategoryJpaEntity jpa = CategoryMapperPersistence.getInstance()
+                .fromCategoryEntityToCategoryJpaEntity(categoryEntity);
         if (categoryEntity.id() == null) {
             entityManager.persist(jpa);
             entityManager.flush();
-            return mapper.fromCategoryJpaEntityToCategoryEntity(jpa);
+            return CategoryMapperPersistence.getInstance().fromCategoryJpaEntityToCategoryEntity(jpa);
         } else {
             CategoryJpaEntity merged = entityManager.merge(jpa);
             entityManager.flush();
             entityManager.refresh(merged);
-            return mapper.fromCategoryJpaEntityToCategoryEntity(merged);
+            return CategoryMapperPersistence.getInstance().fromCategoryJpaEntityToCategoryEntity(merged);
         }
     }
 

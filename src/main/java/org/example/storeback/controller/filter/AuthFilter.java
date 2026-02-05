@@ -70,7 +70,12 @@ public class AuthFilter extends OncePerRequestFilter {
                 return;
             }
 
-            Optional<ClientDto> userOptional = authService.getUserFromToken(token);
+            Optional<ClientDto> userOptional;
+            if (requiresRole.value() == Role.ADMIN) {
+                userOptional = authService.getUserFromToken(token);
+            } else {
+                userOptional = authService.getAnyUserFromToken(token);
+            }
 
             if (userOptional.isEmpty()) {
                 sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Token inválido o expirado");
@@ -85,6 +90,20 @@ public class AuthFilter extends OncePerRequestFilter {
                 return;
             }
 
+            if (user.role() == Role.USER) {
+                String requestURI = request.getRequestURI();
+
+                Long userIdFromUrl = extractUserIdFromUrl(requestURI);
+
+                if (userIdFromUrl != null && !userIdFromUrl.equals(user.id())) {
+                    sendErrorResponse(response, HttpServletResponse.SC_FORBIDDEN,
+                            "No tienes permiso para acceder a recursos de otro usuario");
+                    return;
+                }
+            }
+
+            request.setAttribute("authenticatedUser", user);
+
             filterChain.doFilter(request, response);
 
         } catch (Exception e) {
@@ -96,6 +115,40 @@ public class AuthFilter extends OncePerRequestFilter {
     private String extractTokenFromHeader(String authHeader) {
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             return authHeader.substring(7);
+        }
+        return null;
+    }
+
+
+    private Long extractUserIdFromUrl(String requestURI) {
+        try {
+            if (requestURI.contains("/user/")) {
+                String[] parts = requestURI.split("/user/");
+                if (parts.length > 1) {
+                    String userIdPart = parts[1].split("/")[0].split("\\?")[0];
+                    return Long.parseLong(userIdPart);
+                }
+            }
+
+
+            if (requestURI.matches(".*/carts/\\d+/items.*")) {
+                String[] parts = requestURI.split("/");
+                for (int i = 0; i < parts.length - 1; i++) {
+                    if (parts[i].equals("carts") && parts[i + 1].matches("\\d+")) {
+                        return Long.parseLong(parts[i + 1]);
+                    }
+                }
+            }
+
+            if (requestURI.matches(".*/orders/\\d+/checkout.*")) {
+                String[] parts = requestURI.split("/");
+                for (int i = 0; i < parts.length - 1; i++) {
+                    if (parts[i].equals("orders") && parts[i + 1].matches("\\d+")) {
+                        return Long.parseLong(parts[i + 1]);
+                    }
+                }
+            }
+        } catch (NumberFormatException e) {
         }
         return null;
     }

@@ -23,8 +23,7 @@ public class ClientJpaDaoImpl implements ClientJpaDao {
     public List<ClientEntity> findAll() {
         TypedQuery<ClientJpaEntity> query = entityManager.createQuery(
                 "SELECT c FROM ClientJpaEntity c",
-                ClientJpaEntity.class
-        );
+                ClientJpaEntity.class);
         return query.getResultList().stream()
                 .map(ClientMapperPersistence.getInstance()::fromClientJpaEntityToClientEntity)
                 .collect(Collectors.toList());
@@ -41,8 +40,7 @@ public class ClientJpaDaoImpl implements ClientJpaDao {
     public Optional<ClientEntity> findByEmail(String email) {
         TypedQuery<ClientJpaEntity> query = entityManager.createQuery(
                 "SELECT c FROM ClientJpaEntity c WHERE c.email = :email",
-                ClientJpaEntity.class
-        );
+                ClientJpaEntity.class);
         query.setParameter("email", email);
 
         return query.getResultStream()
@@ -77,8 +75,7 @@ public class ClientJpaDaoImpl implements ClientJpaDao {
     public boolean existsByEmail(String email) {
         TypedQuery<Long> query = entityManager.createQuery(
                 "SELECT COUNT(c) FROM ClientJpaEntity c WHERE c.email = :email",
-                Long.class
-        );
+                Long.class);
         query.setParameter("email", email);
         Long count = query.getSingleResult();
         return count > 0;

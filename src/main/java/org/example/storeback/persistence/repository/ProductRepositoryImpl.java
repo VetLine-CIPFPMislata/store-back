@@ -1,9 +1,12 @@
 package org.example.storeback.persistence.repository;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.example.storeback.domain.models.Page;
 import org.example.storeback.domain.repository.ProductRepository;
 import org.example.storeback.domain.repository.entity.ProductEntity;
 import org.example.storeback.persistence.dao.ProductJpaDao;
+import org.example.storeback.persistence.dao.jpa.entity.CategoryJpaEntity;
 import org.example.storeback.persistence.dao.jpa.entity.ProductJpaEntity;
 import org.example.storeback.persistence.repository.mapper.ProductMapperPersistence;
 
@@ -14,6 +17,8 @@ public class ProductRepositoryImpl implements ProductRepository {
 
     private final ProductJpaDao productJpaDao;
 
+    @PersistenceContext
+    private EntityManager entityManager;
 
     public ProductRepositoryImpl(ProductJpaDao productJpaDao) {
         this.productJpaDao = productJpaDao;
@@ -61,8 +66,22 @@ public class ProductRepositoryImpl implements ProductRepository {
 
     @Override
     public ProductEntity save(ProductEntity productEntity) {
-        var jpaEntity = ProductMapperPersistence.getInstance()
-                .fromProductEntityToProductJpaEntity(productEntity);
+        ProductJpaEntity jpaEntity = new ProductJpaEntity();
+        jpaEntity.setId(productEntity.id());
+        jpaEntity.setName(productEntity.name());
+        jpaEntity.setProductDescription(productEntity.productDescription());
+        jpaEntity.setBasePrice(productEntity.basePrice());
+        jpaEntity.setDiscountPercentage(productEntity.discountPercentage());
+        jpaEntity.setPictureProduct(productEntity.pictureProduct());
+        jpaEntity.setQuantity(productEntity.quantity());
+        jpaEntity.setRating(productEntity.rating());
+
+        // Usar getReference en lugar de crear una nueva instancia
+        if (productEntity.category() != null && productEntity.category().getId() != null) {
+            CategoryJpaEntity categoryRef = entityManager.getReference(CategoryJpaEntity.class, productEntity.category().getId());
+            jpaEntity.setCategory(categoryRef);
+        }
+
         var savedJpaEntity = productJpaDao.save(jpaEntity);
         return ProductMapperPersistence.getInstance()
                 .fromProductJpaEntityToProductEntity(savedJpaEntity);
