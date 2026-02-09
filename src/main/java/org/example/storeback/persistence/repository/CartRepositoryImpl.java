@@ -55,4 +55,9 @@ public class CartRepositoryImpl implements CartRepository {
     public void removeItemFromCart(Long cartId, Long cartItemId) {
         cartJpaDao.removeItemFromCart(cartId, cartItemId);
     }
+
+    @Override
+    public void clearAllItems(Long cartId) {
+        cartJpaDao.clearAllItems(cartId);
+    }
 }
