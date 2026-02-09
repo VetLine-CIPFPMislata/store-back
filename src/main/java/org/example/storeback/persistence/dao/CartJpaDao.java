@@ -12,4 +12,5 @@ public interface CartJpaDao {
     CartJpaEntity save(CartJpaEntity cartJpaEntity);
     void deleteById(Long id);
     void removeItemFromCart(Long cartId, Long cartItemId);
+    void clearAllItems(Long cartId);
 }

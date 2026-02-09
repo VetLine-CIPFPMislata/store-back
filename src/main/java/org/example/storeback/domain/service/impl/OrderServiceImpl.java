@@ -155,7 +155,8 @@ public class OrderServiceImpl implements OrderService {
             orderItemRepository.save(orderItem);
         }
 
-        cartItemRepository.deleteByCartId(cart.id());
+
+        cartRepository.clearAllItems(cart.id());
 
         CartEntity updatedCart = new CartEntity(
                 cart.id(),

@@ -79,4 +79,14 @@ public class CartJpaDaoImpl implements CartJpaDao {
         }
 
     }
+
+    @Override
+    public void clearAllItems(Long cartId) {
+        CartJpaEntity cart = entityManager.find(CartJpaEntity.class, cartId);
+        if (cart == null) {
+            throw new RuntimeException("Cart not found with id: " + cartId);
+        }
+
+        cart.getItems().clear();
+    }
 }
