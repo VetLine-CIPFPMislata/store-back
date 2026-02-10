@@ -1,15 +1,17 @@
 package org.example.storeback.Spring;
 
-
 import org.example.storeback.domain.repository.*;
 import org.example.storeback.domain.service.*;
 import org.example.storeback.domain.service.impl.*;
+import org.example.storeback.microservice.BankPaymentService;
+import org.example.storeback.microservice.impl.BankPaymentServiceImpl;
 import org.example.storeback.persistence.dao.*;
 import org.example.storeback.persistence.dao.jpa.impl.*;
 import org.example.storeback.persistence.repository.*;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
 
 @Configuration
 public class SpringConfig {
@@ -18,7 +20,6 @@ public class SpringConfig {
     public PasswordEncryptionService passwordEncryptionService() {
         return new BCryptPasswordEncryptionService();
     }
-
 
     @Bean
     public OrderJpaDao orderJpaDao() {
@@ -59,7 +60,6 @@ public class SpringConfig {
     public SessionJpaDao sessionJpaDao() {
         return new SessionJpaDaoImpl();
     }
-
 
     @Bean
     public OrderRepository orderRepository(OrderJpaDao orderJpaDao) {
@@ -103,19 +103,19 @@ public class SpringConfig {
 
     @Bean
     public OrderService orderService(OrderRepository orderRepository,
-                                     OrderItemRepository orderItemRepository,
-                                     CartRepository cartRepository,
-                                     CartItemRepository cartItemRepository,
-                                     ClientRepository clientRepository) {
+            OrderItemRepository orderItemRepository,
+            CartRepository cartRepository,
+            CartItemRepository cartItemRepository,
+            ClientRepository clientRepository) {
         return new OrderServiceImpl(orderRepository, orderItemRepository, cartRepository,
-                                   cartItemRepository, clientRepository);
+                cartItemRepository, clientRepository);
     }
 
     @Bean
     public CartService cartService(CartRepository cartRepository,
-                                   CartItemRepository cartItemRepository,
-                                   ClientRepository clientRepository,
-                                   ProductRepository productRepository) {
+            CartItemRepository cartItemRepository,
+            ClientRepository clientRepository,
+            ProductRepository productRepository) {
         return new CartServiceImpl(cartRepository, cartItemRepository,
                 clientRepository, productRepository);
     }
@@ -127,19 +127,36 @@ public class SpringConfig {
 
     @Bean
     public CategoryService categoryService(CategoryRepository categoryRepository,
-                                          ProductRepository productRepository) {
+            ProductRepository productRepository) {
         return new CategoryServiceImpl(categoryRepository, productRepository);
     }
 
     @Bean
     public ClientService clientService(ClientRepository clientRepository,
-                                       PasswordEncryptionService passwordEncryptionService) {
+            PasswordEncryptionService passwordEncryptionService) {
         return new ClientServiceImpl(clientRepository, passwordEncryptionService);
     }
 
     @Bean
     public AuthService authService(SessionRepository sessionRepository,
-                                   ClientRepository clientRepository) {
+            ClientRepository clientRepository) {
         return new AuthServiceImpl(sessionRepository, clientRepository);
+    }
+
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+
+    @Bean
+    public BankPaymentService bankPaymentService(
+            RestTemplate restTemplate) {
+        return new BankPaymentServiceImpl(restTemplate);
+    }
+
+    @Bean
+    public PaymentService paymentService(
+            BankPaymentService bankPaymentService) {
+        return new PaymentServiceImpl(bankPaymentService);
     }
 }
