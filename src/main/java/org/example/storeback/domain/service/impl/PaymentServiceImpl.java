@@ -50,9 +50,9 @@ public class PaymentServiceImpl implements PaymentService {
         return new PaymentResultDto(
                 response.exito(),
                 response.mensaje(),
-                null, // bank-back no devuelve numeroReferencia
+                null,
                 response.importe(),
-                null, // bank-back no devuelve fechaHora
+                null,
                 response.exito() ? null : "PAYMENT_ERROR");
     }
 }
