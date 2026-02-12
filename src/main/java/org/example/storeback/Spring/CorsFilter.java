@@ -24,8 +24,8 @@ public class CorsFilter implements Filter {
 
         if (origin != null && (
                 origin.equals("http://localhost:4200") ||
-                origin.equals("http://store-vetline.preproducciondaw.cip.fpmislata.com") ||
-                origin.equals("http://store-back-vetline.preproducciondaw.cip.fpmislata.com"))) {
+                origin.equals("http://store-vetline.producciondaw.cip.fpmislata.com") ||
+                origin.equals("http://store-back-vetline.producciondaw.cip.fpmislata.com"))) {
             response.setHeader("Access-Control-Allow-Origin", origin);
         }
 

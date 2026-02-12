@@ -20,8 +20,8 @@ public class CorsConfig {
                 registry.addMapping("/api/**")
                         .allowedOriginPatterns(
                                 "http://localhost:4200",
-                                "http://store-vetline.preproducciondaw.cip.fpmislata.com",
-                                "http://store-back-vetline.preproducciondaw.cip.fpmislata.com"
+                                "http://store-vetline.producciondaw.cip.fpmislata.com",
+                                "http://store-back-vetline.producciondaw.cip.fpmislata.com"
                         )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
                         .allowedHeaders("*")
