@@ -14,7 +14,11 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/api/**")
-                        .allowedOrigins("http://store-vetline.preproducciondaw.cip.fpmislata.com")
+                        .allowedOriginPatterns(
+                                "http://localhost:4200",
+                                "http://store-vetline.preproducciondaw.cip.fpmislata.com",
+                                "http://store-back-vetline.preproducciondaw.cip.fpmislata.com"
+                        )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
                         .allowedHeaders("*")
                         .allowCredentials(true)
@@ -24,4 +28,3 @@ public class CorsConfig {
         };
     }
 }
-
