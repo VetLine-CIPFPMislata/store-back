@@ -12,7 +12,7 @@ import org.springframework.web.client.RestTemplate;
 public class BankPaymentServiceImpl implements BankPaymentService {
 
     private final RestTemplate restTemplate;
-    private static final String BANK_API_URL = "http://bank-back-vetline.preproducciondaw.cip.fpmislata.com";
+    private static final String BANK_API_URL = "http://bank-back-vetline.producciondaw.cip.fpmislata.com";
 
     public BankPaymentServiceImpl(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
