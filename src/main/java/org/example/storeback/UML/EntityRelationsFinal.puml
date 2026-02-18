@@ -4,56 +4,82 @@
 '       ENTIDADES
 ' =======================
 
-
-
 class Client {
     id
     name
     email
     password
     phone
-    country
+    cartId
+    role
 }
 
 class Cart {
-    id_cart
-    total_products
-    total_price
+    id
+    totalProducts
+    totalPrice
+    user
+    items
 }
 
 class CartItem {
-    id_item_cart
+    id
     quantity
+    cartId
+    product
 }
 
 class Product {
-    id_product
-    id_category
+    id
+    category
     name
-    product_description
+    productDescription
+    basePrice
+    discountPercentage
     price
-    discountedPrice
     pictureProduct
     quantity
     rating
 }
 
-class ProductCategory {
-    id_category
+class Category {
+    id
     name
     description
+}
+
+class Order {
+    id
+    totalProducts
+    totalPrice
+    state
+    user
+    createdAt
+    orderAt
+    address
+    items
+}
+
+class OrderItem {
+    id
+    quantity
+    orderId
+    product
 }
 
 ' =======================
 '      RELACIONES
 ' =======================
 
-Client "1" --> "1" Cart : has
+Client "1" --> "0..1" Cart : tiene
 
+Cart "1" --> "N" CartItem : contiene
+CartItem "*" --> "1" Product : referencia
 
-Cart "1" --> "N" CartItem : contains
-Product "1" --> "N" CartItem
+Category "1" --> "N" Product : agrupa
 
-ProductCategory "1" --> "N" Product
+Client "1" --> "N" Order : realiza
+Order "1" --> "N" OrderItem : contiene
+OrderItem "*" --> "1" Product : referencia
 
 @enduml
